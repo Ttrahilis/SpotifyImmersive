@@ -38,6 +38,6 @@ Educational use only. Demonstrates DOM manipulation and UI adaptation techniques
 - To run the project:  
 `./run`
 ### Build instructions
-- Make sure you can [run](https://github.com/Ttrahilis/SpotifyImmersive/edit/main/README.md#run-instructions](https://github.com/Ttrahilis/SpotifyImmersive/tree/main?tab=readme-ov-file#run-instructions)) the project first
+- Make sure you can [run]([https://github.com/Ttrahilis/SpotifyImmersive/edit/main/README.md#run-instructions](https://github.com/Ttrahilis/SpotifyImmersive/tree/main?tab=readme-ov-file#run-instructions)](https://github.com/Ttrahilis/SpotifyImmersive/?tab=readme-ov-file#run-instructions)) the project first
 - To build the project:
 `./build`
