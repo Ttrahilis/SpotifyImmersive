@@ -4,9 +4,7 @@ Reverse-engineered the Spotify Web Player (desktop site) to inject custom JavaSc
 # Purpose:
 Educational use only. Demonstrates DOM manipulation and UI adaptation techniques using browser extensions.
 # Download Firefox Extension
-[Download latest version here](https://github.com/Ttrahilis/SpotifyImmersive/builds/spotifyimmersive-latest.xpi)  
-
-[See older versions](https://github.com/Ttrahilis/SpotifyImmersive/builds/)
+ - coming soon
 # How to Contribute
 ### Dependencies
 - Firefox
