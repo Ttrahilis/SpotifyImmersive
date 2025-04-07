@@ -1,0 +1,5 @@
+#!/bin/bash
+profile="$(cat profile)"
+echo "Loading profile from $profile"  
+web-ext run --source-dir=src/ --reload --firefox-profile=$profile
+
