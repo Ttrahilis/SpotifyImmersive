@@ -1,10 +1,4 @@
-
-
-
-
-
-
-    /*MINI SPOTIFY STYLE WORKS ON FIREFOX ANDROID WITH USERAGENT & TAMPERMONKEY*/
+/*MINI SPOTIFY STYLE WORKS ON FIREFOX ANDROID WITH USERAGENT & TAMPERMONKEY*/
 html{
     --left-sidebar-width:0;
     overflow:hidden;
@@ -194,6 +188,9 @@ div#main>div {
         }
     }
 }
+
+/**/
+
 #globalBody[controlbarexpanded="open"][AboutTabState="now_playing"] #globalAboutTab { /*now playing view*/
 
     >:nth-child(1){
@@ -206,12 +203,31 @@ div#main>div {
 
     }
 
-    #Desktop_PanelContainer_Id>div>div{
-        display:contents;
-        >:nth-child(1)>:nth-child(1){
-            translate:3vw;
-            left:10vw;
-
+    #Desktop_PanelContainer_Id{
+        >:nth-child(1)>:nth-child(2)>:nth-child(1){
+            
+            >*{
+                width:100% !important; 
+                padding:unset;
+                >*{
+                    width:100% !important; 
+                }
+            }
+            
+        }
+        .cIUedsmg_cTnTxvOYTKR{
+            min-width:100% !important;
+        }
+        >div>div{
+            display:contents;
+            button{
+                visibility: hidden;
+                display:none;
+            }
+            button[data-testid="more-button"]{
+                visibility: visible;
+                display:flex; 
+            }
         }
     }
     .os-size-observer+ div > :nth-child(1) > :nth-child(1){ /*give space to the screen so everything is visible*/

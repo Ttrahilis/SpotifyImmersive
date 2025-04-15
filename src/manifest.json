@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SpotifyImmersive",
-  "version": "1.0",
+  "version": "1.0.0.1",
   "permissions": [
     "tabs",
     "activeTab"
@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.spotify.com/*"],
-      "js": ["content.js"],
+      "js": ["DomModifierClass.js","System.js","Agent.js","content.js"],
 	  "css": ["style.css"]
     }
   ],
