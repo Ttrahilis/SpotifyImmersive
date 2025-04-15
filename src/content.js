@@ -2,6 +2,13 @@ let DomModifier;
 let sys;
 let ag;
 
+function debounce(func, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), delay);
+  };
+}
 
 (function() {
     /*GM_addStyle*/
@@ -89,42 +96,32 @@ let ag;
         }
     };
 
-
+	let divideSearchBar_flag=false;
     const divideSearchBar = () => {
+		if (divideSearchBar_flag==true){return;}
         let SearchForm = document.querySelector("#SearchForm");
-
-        if (SearchForm && SearchForm.dataset.moved==1){
-            return 1;
-        }
 
         let globalNavBar = document.querySelector('#global-nav-bar');
         let browseButtonOld = document.querySelector('#browseButtonOld');
 
 
-        if (browseButtonOld && globalNavBar){
-            if (browseButtonOld.dataset.moved!=1){
-
-                browseButtonOld.dataset.moved=1; /*if u get through here then no need to rerun*/
-
-                
-				let browseButtonNew = DomModifier.createButton("browseButtonNew",globalNavBar,'M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.42768 3.27893 10.533 3.27893C14.6383 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6383 17.8369 10.533 17.8369C6.42768 17.8369 3.12598 14.5636 3.12598 10.5579Z');
-                
-                browseButtonNew.addEventListener('click', function() {
-                    sys.push_currentState('search','/search');
-                });
-				
-				SearchForm.dataset.readyToMove=1;
-
-            }
-
+        if (browseButtonOld && globalNavBar){ 
+			
             let mainViewContainer = document.querySelector(".main-view-container");
 
-            if (mainViewContainer && SearchForm && SearchForm.dataset.readyToMove==1){
-                if (SearchForm.dataset.moved!=1) {
-                    SearchForm.dataset.moved=1;
-                    mainViewContainer.insertBefore(SearchForm, mainViewContainer.firstChild);
-
-                }
+            if (mainViewContainer && SearchForm){
+				mainViewContainer.insertBefore(SearchForm, mainViewContainer.firstChild);
+				
+				if (!document.querySelector(`#globalBody form[data-encore-id="formInputIcon"]`)){
+					return;
+				} else{
+					divideSearchBar_flag=true;
+				}
+				let browseButtonNew = DomModifier.createButton("browseButtonNew",globalNavBar,'M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.42768 3.27893 10.533 3.27893C14.6383 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6383 17.8369 10.533 17.8369C6.42768 17.8369 3.12598 14.5636 3.12598 10.5579Z');
+				
+				browseButtonNew.addEventListener('click', debounce(function() {
+					sys.toggleSearchBar();
+				}, buttondelay)); // Adjust delay as needed
 
             }
         }
@@ -320,8 +317,8 @@ let ag;
 
         });
 
-        sys.push_currentState('home',null);/*Podariko*/
-
+		sys.enableMainView();/*Podariko*/
+		sys.disableControlBar();
         // Initial check to set visibility when the page first loads
         logicdefined=1;
         ag.checkDomAndAct();
@@ -340,12 +337,11 @@ let ag;
                 console.log('Button added to #global-nav-bar successfully.');
  
 				const handleClick = (e) => {
-					let library_expand_button = document.getElementById("ShowFullLibrary");
-					const current = sys.get_currentState(); 
-					if (current==='library'){
-						sys.push_currentState('home',null);
+					let library_expand_button = document.getElementById("ShowFullLibrary"); 
+					if (sys.get_currentStateOfMainView() ==false){//library
+						sys.enableMainView();
 					} else {
-						sys.push_currentState('library',null);
+						sys.disableMainView()
 						if (library_expand_button.getAttribute('aria-label')=="Open Your Library")
 							library_expand_button.click();
 					}
@@ -399,7 +395,7 @@ let ag;
 						(current==false && (!e.target.closest('#playerControls')) )
 					) {
 					   
-						sys.toggleControlBar();
+						sys.enableControlBar();
 						globalControlBar.removeEventListener('click', handleClick);
 						setTimeout(() => globalControlBar.addEventListener('click', handleClick), buttondelay);
 					}

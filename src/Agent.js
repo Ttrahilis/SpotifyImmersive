@@ -10,7 +10,6 @@ class Agent{
 	oldUrl="";
 
 	constructor (){
-		this.stateChangedAgent();
 		this.initialise_basic_elements();
 	}
 	static CanvasOrArtworkAgent() {
@@ -32,66 +31,11 @@ class Agent{
 		this.SearchForm = document.querySelector("#SearchForm");
 	}
 
-	stateChangedAgent(){ //Creates a trigger for when a state is changed (pushed programmatically, user clicking through spotify app, backwards/forwards button on browser)
-		const originalPushState = history.pushState;
-		const originalReplaceState = history.replaceState;
-		this.oldUrl = window.location.href; // Store initial URL
-
-		const onStateChange = (origin) => {
-			console.log('get_currentState() ' + sys.get_currentState() + ' oldstate ' + sys.oldState + ' origin ' + origin);
-			if (sys.oldState!='about' && sys.get_currentState()=='about' && origin==='pop'){ //if we managed to hit the about tab from using back button navigation, skip the about tab we dont want it
-				console.log('no need to go back to about tab');
-				window.history.back();
-			} else if (sys.oldState==='about' && origin==='pop' && sys.get_currentState()==='undefined' ){//if oldState is about and we got here using the back button, prevent actually going back
-				console.log('Lets try to avoid closing about and going back simultaneously. push url: ' + this.oldUrl);
-				//sys.push_currentState('undefined',this.oldUrl);
-				//history.pushState("", "", this.oldUrl);
-
-			}
-
-			if (this.currentUrl !== this.oldUrl) { //may be used for future stuff
-				//console.log("URL literally changed:", this.currentUrl);
-				this.oldUrl = this.currentUrl;
-			} else {
-				//console.log("URL not literally changed but state pushed");
-			}
-			//this.checkDomAndAct(); gets executed in set_currentState();
-		};
-
-		//Caution: when clicking through spotify it returns currentState undefined
-		history.pushState = function(...args) {
-			originalPushState.apply(history, args);
-			sys.set_currentState(history.state.page);
-			console.log ('Push state:' + sys.get_currentState());
-			onStateChange('push');
-		};
-
-		history.replaceState = function(...args) {
-			originalReplaceState.apply(history, args);
-			sys.set_currentState(history.state.page);
-			console.log ('Replace state:' + sys.get_currentState());
-			onStateChange('replace');
-		};
-
-
-		window.addEventListener("popstate", function(event) {
-			sys.set_currentState(event.state.page);// Save the state when navigating back/forward
-			console.log ('Pop state:' + sys.get_currentState());
-			onStateChange('pop');
-		});
-	};
-
+	
 	checkDomAndAct() {
-
-		// Check if the current page starts with "/search/" (using pathname)
+ 
 		let window_loc_path=window.location.pathname;
-		if (window_loc_path.startsWith('/search')) {
-			this.SearchForm.style.display = 'block'; // Show the search form if on "/search/**"
-		} else {
-			this.SearchForm.style.display = 'none'; // Hide the search form for other URLs
-
-		}
-		if (sys.get_currentState()==='library') { 
+		if (sys.get_currentStateOfMainView()==false) { 
 			setTimeout(function() {
 				this.ShowFullLibrary = document.getElementById('ShowFullLibrary');
 				if (this.ShowFullLibrary.getAttribute('aria-label') == 'Expand Your Library'){// if (checkforDIV(divthatshowsLibraryIsNOTExpanded)){LibraryDiv.click()}
@@ -151,7 +95,7 @@ class Agent{
 
 				// Check if the scrollable area is near the top (within 10px)
 				if (scrollableDiv.scrollTop <= 10 && deltaY > 0) {
-					sys.push_currentState('home', null);
+					sys.disableControlBar();
 				}
 
 				// Update the last mouse Y position
@@ -166,7 +110,7 @@ class Agent{
 
 				// Check if the scrollable area is near the top (within 10px)
 				if (scrollableDiv.scrollTop <= 10 && deltaY > 0) {
-					sys.push_currentState('home', null);
+					sys.disableControlBar();
 				}
 
 				// Update the last touch Y position

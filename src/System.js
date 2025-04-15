@@ -1,21 +1,21 @@
 // High level interface for handling app(ignoring DOM specific details)
 class System {
-	#secret; // Private field
-	#currentState;
-	oldState;
+	#secret; // Private field 
+	
 	#VisualiserEnabled;
 	#global_color;
 	#global_side_color;
 
-	
+	#search; //search feature enabled
 	#main_view;//e.g. home library search
 	#about_tab; // e.g. true/false = enabled / disabled (the full view of about tab and expanded control bar)
 	#about_tab_state; //e.g. now_playing
 	constructor() {
 		DomModifier.createCssVariable('--global-color','black');
-		DomModifier.createCssVariable('--global-side-color','black');
-		this.#currentState = null;
+		DomModifier.createCssVariable('--global-side-color','black'); 
+		this.#main_view = false;
 		this.#about_tab = true;
+		this.#search = true;
 	}
 
 	#revealSecret() { // Private method
@@ -25,9 +25,17 @@ class System {
 	showSecret() {
 		this.#revealSecret(); // Works inside class
 	}
-	//Setters
-	
-	//
+	//Setters Getters Toggles etc
+	//Toggle Search Box feature
+	toggleSearchBar(){
+		this.#search=!this.#search;
+		if (this.#search==true){
+			DomModifier.writeToBody('search',"enabled");
+		} else if (this.#search==false){
+			DomModifier.writeToBody('search',"disabled");
+		}
+	}
+	// Toggle Control Bar
 	toggleControlBar(){ 
 		this.#about_tab=!this.#about_tab;//toggle
 		if (this.#about_tab==true){
@@ -38,40 +46,47 @@ class System {
 		}
 		ag.checkDomAndAct();
 	}
+	
 	get_currentStateOfControlBar(){
 		return this.#about_tab; //about tab is the same as control bar in high level logic because they show up together
 	}
-	//
-	syncDomState(){
-		let state=this.#currentState;
-		if (state=='library' || state=='home'){
-			DomModifier.writeToBody('mainview',state);
-			if (this.#about_tab==true){
-				this.toggleControlBar();
-			}
+	
+	enableControlBar(){
+		if (this.#about_tab==false){
+			this.toggleControlBar();
+		}
+	}
+	disableControlBar(){
+		if (this.#about_tab==true){
+			this.toggleControlBar();
+		}
+	}
+	// Toggle Main View
+	toggleMainView(){
+		this.#main_view = !this.#main_view;
+		if (this.#main_view==true){
+			DomModifier.writeToBody('mainview',"home");
+		}
+		else if (this.#main_view==false){
+			DomModifier.writeToBody('mainview',"library");
 		}
 	}
 	
-	set_currentState(currentState){
-		this.oldState= this.#currentState; //save old State
-		this.#currentState = currentState ; //save current State
-		this.syncDomState();ag.checkDomAndAct();
+	enableMainView(){ //Shows Main View
+		if (!this.#main_view){
+			this.toggleMainView();
+		}
+	}
+	disableMainView(){ //Shows Library Page
+		if (this.#main_view){
+			this.toggleMainView();
+		}
 	}
 	
-	push_currentState(currentState,url){
-		if ( (currentState!='about' && this.#currentState=='about' ) || currentState=='about' || this.oldState==this.#currentState) { //prevent pushing of previous state if we have about enabled
-			this.set_currentState(currentState); //Set state without using push api (not triggering history)
-			return;
-		}
-		this.oldState=this.#currentState; //Keep old state
-		this.#currentState=currentState;
-		if (url===null){
-			url = window.location.href;
-		}
-		
-		this.syncDomState();history.pushState({ page: `${currentState}` }, `${currentState}`, url);
-		
+	get_currentStateOfMainView(){
+		return this.#main_view;
 	}
+	
 
 	set_VisualiserEnabled(val){
 		this.#VisualiserEnabled = val;
@@ -85,11 +100,6 @@ class System {
 		DomModifier.createCssVariable('--global-side-color',global_side_color);
 	}
 
-	//Getters
-	get_currentState(){
-		return this.#currentState;
-	}
-	
 	
 	get_VisualiserEnabled(){
 		return this.#VisualiserEnabled;
@@ -99,5 +109,4 @@ class System {
 	}
 
 }
-
-//window.System = System;
+ 

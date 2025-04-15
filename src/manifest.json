@@ -10,7 +10,7 @@
     {
       "matches": ["*://*.spotify.com/*"],
       "js": ["DomModifierClass.js","System.js","Agent.js","content.js"],
-	  "css": ["style.css"]
+	  "css": ["style.css","about_tab.css","navbar.css","controlbar.css"]
     }
   ],
   "action": {
