@@ -1,10 +1,21 @@
 let DomModifier;
 let sys;
 let ag;
+
+const originalLog = console.log;
+console.log = function(...args) {
+	//set to true for debugging
+	if (true){
+		originalLog(...args);
+	}
+};
+
 class BasicInfo{
 	static divsToModify;
 	static unNecessaryCount=0;
 }
+const buttondelay=200; 
+let AboutTabState; //State of about tab
 
 function debounce(func, delay) {
   let timeout;
@@ -14,7 +25,8 @@ function debounce(func, delay) {
   };
 }
 
-//repeatUntilTrue: consumes a function 'foo' and runs it indefenitely
+//repeatUntilTrue: consumes a function 'foo' and runs it indefenitely,
+//until 'foo' returns the boolean value true;
 //while letting the background processes continue
 //function 'foo' should return true when it accomplishes its goals
 async function repeatUntilTrue(fn) {
@@ -25,6 +37,7 @@ async function repeatUntilTrue(fn) {
   return true;
 }
 
+// Define an array of objects with your desired selectors and corresponding new IDs
 BasicInfo.divsToModify = [
 	//SOS. ITERATION WILL BE DONE IN REVERSE. LIST STARTS ITERATING FROM THE BOTTOM
 
@@ -64,7 +77,7 @@ function countAllUnNecessaries() {
 	}
 };
 countAllUnNecessaries();
-console.log('log '+BasicInfo.unNecessaryCount);
+console.log('unNecessaryCount: ' + BasicInfo.unNecessaryCount); 
 async function assignIDs(){ 
 	// return true;
 	if (BasicInfo.divsToModify.length<=BasicInfo.unNecessaryCount){
@@ -135,19 +148,6 @@ async function divideSearchBar () {
 
 /*GM_addStyle*/
 
-const buttondelay=200;
-//GLOBAL VARIABLES START
-let AboutTabState; //State of about tab
-//GLOBAL VARIABLES END
-// Define an array of objects with your desired selectors and corresponding new IDs
-
-
-console.log('unnec count' + BasicInfo.unNecessaryCount);
-
-
-
-
-
 const fixBrightRGB = (r, g, b) =>{
 	let L = (r + g + b) / 3; // Calculate luminance
 	//console.log('Luminance:', L);
@@ -164,14 +164,14 @@ let global_color=0;
 let global_sidecolor;
 const TrackColor = () => {
 	if (global_color!=0){
-		return 1;
+		return true;
 	}
 	// Get the image element
 	const img = document.querySelector('#globalControlBar img[data-testid="cover-art-image"]');
 
 	if (!img) {
 		console.log("Image not found");
-		return 0;
+		return;
 	}
 
 	// Ensure the image has the crossOrigin attribute if it's from a different origin
@@ -293,9 +293,12 @@ async function defineLogic (){
 					console.error('scrollableContainer Div Not Found');
 				} 
 				if (scrollableContainer && stickyDiv) {
+					
 					scrollableContainer.id="scrollableContainerAboutTab";
-					scrollableContainer.addEventListener('scroll', function() {//scrolltop 100
+					scrollableContainer.addEventListener('scroll', function(e) {//scrolltop 100
+						console.log("hello from the other side");
 						let scrollPercentage = ((scrollableContainer.scrollTop*100) / scrollableContainer.clientHeight);
+						console.log('scrollPercentage ' + scrollPercentage);
 						if (AboutTabState=="now_playing" ){
 							// Adjust margin-bottom based on scroll percentage
 							stickyDiv.style.marginBottom = `${scrollPercentage }vh`;
@@ -315,6 +318,7 @@ async function defineLogic (){
 		
 		setTimeout(function() {
 			if (sys.get_currentStateOfControlBar()==true){
+				console.log("should check about tab state");
 				checkAboutTabState();
 			}
 			
@@ -407,93 +411,37 @@ async function addControlBarBehavior() {
 		return true;
 	}
 		
-		
- 
-
-
 }
 
-//Observe mutations on the DOM
-// const observer = new MutationObserver((mutations) => {
-	// for (const mutation of mutations) {
-		// if (mutation.type === 'childList' || mutation.type === 'attributes') {
-			// const checks = [
-				// // repeatUntilTrue(addLibraryButton) == 1,
-				// // repeatUntilTrue(addControlBarBehavior) == 1,
-				// // repeatUntilTrue(divideSearchBar) ==1,
-				// // repeatUntilTrue(defineLogic) == 1, 
-				// // repeatUntilTrue(assignIDs) == 0
-			// ];
-			// // repeatUntilTrue(assignIDs());
-			// // if (checks.every(Boolean)) {
-				// // TrackColor();
-				// // ag.addScrollBarBehavior();
-				// // ag.initialise_basic_elements(); 
-				// // console.log('disconnecting observer');
-				// // observer.disconnect();
-			
-				// // // Select all link elements that reference stylesheets-------------------
-				// // const links = document.querySelectorAll('link[rel="stylesheet"]');
 
-				// // // Loop through the links and remove the ones we dont need based on their name
-				// // links.forEach(link => {
-					// // if (link.href.includes('dwp-lyrics-cinema-mode-container') || link.href.includes('dwp-full-screen-mode-container')) { // Match the CSS file with the substring
-						// // link.parentNode.removeChild(link); // Remove the <link> element
-						// // console.log('CSS file removed:', link.href); // Optional: Log for debugging
-					// // }
-				// // });
-				// // //--------------------------------------------------------------------------
-				// // break;
-				// // console.error('still here');
-
-			// // }
-
-		// }
-	// }
-// });
-
-// Start observing the document body
-// observer.observe(document.body, {
-	// childList: true, // Watch for added/removed child nodes
-	// subtree: true, // Watch entire DOM subtree
-	// attributes: true, // Watch for attribute changes (optional)
-// });
-// console.log("MutationObserver script initialized. Monitoring DOM for changes...");
-// // Initial assignment in case elements are already present on page load
 window.onload = () => {
 	
-	// if (repeatUntilTrue(assignIDs())  ){ // && repeatUntilTrue(divideSearchBar())
-		// console.log('done');
-	// } 
 	DomModifier = new DomModifierClass();
 	sys = new System();
-	ag = new Agent();
-	if (repeatUntilTrue(assignIDs) 
-&& repeatUntilTrue(addLibraryButton)
-&& repeatUntilTrue(addControlBarBehavior)
-&& repeatUntilTrue(divideSearchBar)
-&& repeatUntilTrue(defineLogic)	){ // && repeatUntilTrue(divideSearchBar())
-		console.log('done');
-	}
-	TrackColor();
-				ag.addScrollBarBehavior();
-				ag.initialise_basic_elements(); 
-				console.log('disconnecting observer');
-				// observer.disconnect();
-			
-				// Select all link elements that reference stylesheets-------------------
-				const links = document.querySelectorAll('link[rel="stylesheet"]');
-
-				// Loop through the links and remove the ones we dont need based on their name
-				links.forEach(link => {
-					if (link.href.includes('dwp-lyrics-cinema-mode-container') || link.href.includes('dwp-full-screen-mode-container')) { // Match the CSS file with the substring
-						link.parentNode.removeChild(link); // Remove the <link> element
-						console.log('CSS file removed:', link.href); // Optional: Log for debugging
-					}
-				});
-				
+	ag = new Agent(); 
 	
-	// Inject custom styles using GM_addStyle
+	repeatUntilTrue(assignIDs);
+	repeatUntilTrue(defineLogic);
+	repeatUntilTrue(addLibraryButton);
+	repeatUntilTrue(addControlBarBehavior);
+	repeatUntilTrue(divideSearchBar);
+	repeatUntilTrue(TrackColor);
+	//execution continues normally, as if we launched async threads.
+	ag.initialise_basic_elements(); 
+	ag.addScrollBarBehavior();
+	
+	console.log('continuing'); 
+
+	// Select all link elements that reference stylesheets-------------------
+	const links = document.querySelectorAll('link[rel="stylesheet"]');
+
+	// Loop through the links and remove the ones we dont need based on their name
+	links.forEach(link => {
+		if (link.href.includes('dwp-lyrics-cinema-mode-container') || link.href.includes('dwp-full-screen-mode-container')) { // Match the CSS file with the substring
+			link.parentNode.removeChild(link); // Remove the <link> element
+			console.log('CSS file removed:', link.href); // Optional: Log for debugging
+		}
+	});
 
 	console.log("AAAAAAAAAAAAAAPage fully loaded. Executing script...");
 	

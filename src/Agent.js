@@ -69,10 +69,10 @@ class Agent{
 	addScrollBarBehavior(){
 		const scrollableDiv = document.querySelector('#globalAboutTab div[data-testid="NPV_Panel_OpenDiv"]');
 		if (!scrollableDiv){
-			console.log('ScrollableDivNotFound');
+			console.error('addScrollBarBehavior: '+'ScrollableDivNotFound');
 			return;
 		}
-		console.log('ScrollableDivFound');
+		console.log('addScrollBarBehavior: '+'ScrollableDivFound');
 		let isTouching = false;
 		let lastTouchY = 0;
 
