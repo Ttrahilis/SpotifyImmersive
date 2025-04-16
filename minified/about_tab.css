@@ -1,0 +1,117 @@
+/*--------------------------------------------------------------------------------------------------------ABOUT TAB CUSTOMIZATION*/
+#globalBody[controlbarexpanded="open"][AboutTabState="device_picker"] #globalAboutTab { /*change device screen*/
+
+    & > :nth-child(1) {
+        width:100% !important ;
+        & > :nth-child(1) {
+
+            width:100% !important;
+            height:70%;
+        }
+    }
+ }
+
+#globalBody[controlbarexpanded="open"][AboutTabState="queue"] #globalAboutTab { /*queue screen*/
+    & > :nth-child(1) {
+        width:100% !important ;
+        height:70%;
+    }
+
+ }
+
+#globalBody[controlbarexpanded="open"][AboutTabState="now_playing"][visualiser="disabled"] #globalAboutTab {
+    #Desktop_PanelContainer_Id>div>div{
+         >:nth-child(1){
+            background: var(--global-color);
+        }
+    }
+
+    #scrollableContainerAboutTab {
+        background: linear-gradient(to bottom, var(--global-color), black 50vh);
+    }
+}
+
+#globalBody[controlbarexpanded="open"][AboutTabState="now_playing"][visualiser="enabled"] #globalAboutTab {
+    #Desktop_PanelContainer_Id>div>div{
+         >:nth-child(1){
+            background:transparent !important;
+        }
+    }
+}
+
+/**/
+
+#globalBody[controlbarexpanded="open"][AboutTabState="now_playing"] #globalAboutTab { /*now playing view*/
+
+    >:nth-child(1){
+        width:100% !important;
+        >:nth-child(1){
+            width:100%!important ;
+
+            border-radius: 0px;
+        }
+
+    }
+
+    #Desktop_PanelContainer_Id{
+        >:nth-child(1)>:nth-child(2)>:nth-child(1){
+            overflow-x: hidden !important;
+            >*{
+                width:100% !important; 
+                padding:unset;
+                >*{
+                    width:100% !important; 
+                }
+            }
+            
+        }
+        .cIUedsmg_cTnTxvOYTKR{
+            min-width:100% !important;
+        }
+        >div>div{
+            display:contents;
+            button{
+                visibility: hidden;
+                display:none;
+            }
+            button[data-testid="more-button"]{
+                visibility: visible;
+                display:flex; 
+            }
+        }
+    }
+    .os-size-observer+ div > :nth-child(1) > :nth-child(1){ /*give space to the screen so everything is visible*/
+
+        padding-bottom:12vh;
+        > :nth-child(1){
+            height:50vh;
+        }
+
+    }
+    div[data-testid="NPV_Panel_OpenDiv"]{
+        >:nth-child(1)>:nth-child(1){
+            height:50vh;padding-top:20%;
+            >:nth-child(2){ /*Hide artist title and gradient*/
+                visibility:hidden;
+            }
+        }
+        a div{ /*style track image*/
+            border-radius:13px;
+            scale:0.989;
+        }
+
+    }
+
+
+    .canvasVideoContainerNPV{
+        /*aspect-ratio: 720/1550;*/
+    }
+    button[aria-label="Close"]{
+        visibility: hidden;
+        position:absolute;
+    }
+    #videoart{
+        width:100%;
+    }
+
+}

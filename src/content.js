@@ -359,8 +359,9 @@ async function addLibraryButton(){
 				sys.enableMainView();
 			} else {
 				sys.disableMainView()
-				if (library_expand_button.getAttribute('aria-label')=="Open Your Library")
+				if (library_expand_button.getAttribute('aria-label')=="Open Your Library"){
 					library_expand_button.click();
+				}
 			}
 		}, buttondelay)); // Adjust delay as needed
 		return true;

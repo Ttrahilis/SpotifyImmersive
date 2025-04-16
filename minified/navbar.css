@@ -1,0 +1,68 @@
+/*------------------------------------------------------------------------------------------------------NAVBAR CUSTOMIZATION*/
+
+
+#globalBody[controlbarexpanded="closed"] #global-nav-bar{ /*zoom all divs in search tabs*/
+
+    left:flex-start;
+    width:51% !important;
+    >*{
+        flex:1; height:100%;
+    }
+    >:nth-child(1){ /*Hide Spotify Logo - Backarrow forwardarrow*/
+
+        visibility:hidden;
+        position:absolute;
+    }
+    >:nth-child(2){ /*Spotify Home*/
+        justify-content:center ;
+        button{
+            flex:1;
+            margin-inline:0px;
+        }
+    }
+
+    >:nth-last-child(3){ /*div contains notifButton, avatar*/
+        max-width:fit-content;
+        order:4;
+        >*{
+            width:auto;
+        }
+    }
+     #ChangeToSearch{
+        order:2;
+    }
+
+    #library-toggle-button{
+        order:3;
+    }
+
+    #notifButton{
+        all:unset;
+        order:4;
+    }
+    #notifButton + * {
+        order:5;
+        >figure{
+            max-width:fit-content;
+        }
+
+    }
+
+
+    #SPdownloadButton,#SPpremiumButton{
+        visibility:hidden !important;
+        position:absolute;
+
+    }
+
+    #notifButton{
+        visibility: visible !important;
+    }
+    button{
+         background-color:transparent !important;
+
+    }
+
+}
+
+/*------------------------------------------------------------------------------------------------------*/

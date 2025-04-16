@@ -1,0 +1,322 @@
+/*Main Layout Customisation + HomePage + Library*/
+html{
+    --left-sidebar-width:0;
+    overflow:hidden;
+    body{
+        min-width: 0px; /* Disable spotify width limit */
+        overflow:hidden;
+        #main {
+            overflow:hidden;
+        }
+    }
+}
+
+.os-scrollbar-handle{
+        visibility: hidden;
+}
+#context-menu{
+    &[data-placement="bottom-end"]{
+        transform-origin:top right;
+    }
+    &[data-placement="bottom-start"]{
+        transform-origin:bottom left;
+    }
+    scale:2;
+}
+
+
+div#main>div {
+    --panel-gap: 2px !important;
+    overflow:hidden;
+    >div{ /*order all windows in top down view other for mobile layout*/
+        display:flex;
+        flex-direction: column-reverse;
+        width:100vw;
+        overflow:hidden;
+
+    }
+}
+
+
+/*Anakatanomes MAIN stoixeiwn */
+#global-nav-bar{                    /*Navigation top bar*/
+    z-index:1;
+    background-color: transparent !important;
+    background: linear-gradient(to top, rgba(0, 0, 0, .94) 10%, rgba(0, 0, 0, 0.7)  );
+    backdrop-filter: blur(0px);
+    z-index:200;
+    width:50%;
+}
+
+
+#Desktop_LeftSidebar_Id{            /*LIBRARY SIDEBAR*/
+
+    position:absolute;
+    top:0px;
+    width: 100%;
+    height:100vh;
+    overflow:hidden;
+    overflow-y:scroll;
+    /**/
+
+    will-change:position;/*will-change: transform, transform-origin, scale, visibility, position;*/
+
+}
+#globalControlBar{      /*spotify controls bottom bar*/
+
+    background-color:black;
+    order:1;
+    width:50% !important;
+    z-index: 10;
+}
+
+#mainpage{                          /*spotify main page */
+
+    position:absolute;
+    top:0px;
+    overflow: auto;
+    overflow-x:hidden;
+    scrollbar-width: none;
+    width:100%;
+    height:100vh;
+    border-radius:0px;
+    will-change:position;
+
+}
+
+
+
+#globalAboutTab {               /*spotify about tab */
+    position:absolute;
+    display:flex;
+    top:0px;left:0px;
+    width:50vw;
+    scrollbar-width: 0px;
+    height:50vh ;
+    transform-origin:top left;
+    scale:2;
+
+}
+
+
+/*----------------------------------------------------------------------------------------------------VISIBILITIES CUSTOMIZATION*/
+
+
+#globalBody[mainview="home"][controlbarexpanded="closed"]{
+    #Desktop_LeftSidebar_Id
+    {
+        visibility:hidden ;
+    }
+    #mainpage{
+        visibility:visible ;
+        scrollbar-width: 0px;
+    }
+}
+
+#globalBody[mainview="library"][controlbarexpanded="closed"]{
+    #Desktop_LeftSidebar_Id{
+        visibility:visible ;
+    }
+    #mainpage {
+        visibility:hidden ;
+    }
+}
+
+#globalBody[controlbarexpanded="open"]{
+    #Desktop_LeftSidebar_Id,
+    #mainpage
+    {
+        visibility:hidden ;
+    }
+    #global-nav-bar
+    {
+        visibility:hidden ;
+        position:absolute;
+    }
+    #globalAboutTab{
+        visibility:visible;
+    }
+}
+
+#globalBody[controlbarexpanded="closed"]{
+    #globalAboutTab {
+        visibility:hidden;
+        *{
+            visibility:hidden;
+        }
+    }
+}
+
+/*------------------------------------------------------------------------------------------------------*/
+/*-------------------------------------------------------------------------LIBRARY SIDEBAR CUSTOMIZATION*/
+/*------------------------------------------------------------------------------------------------------*/
+#globalBody[mainview="library"] #Desktop_LeftSidebar_Id {
+    > :nth-child(1) {
+        transform-origin:top left;
+        transform-box:  fill-box;
+        scale:2;
+        width:50%;
+        overflow:visible ;
+        > :nth-child(1)> :nth-child(1){
+            border-radius:0px;
+            > :nth-child(2)  {
+                padding-bottom:9vh;
+            }
+        }
+    }
+    .os-scrollbar-track{
+        visibility: hidden;
+    }
+    #ShowFullLibrary{
+        pointer-events: none;
+    }
+}
+/*------------------------------------------------------------------------------------------------------*/
+
+#mainpage>.main-view-container { /*main page adjustment to fit*/
+    transform-origin: top left;
+    transform: scale(2) ;
+    width: 50%;
+
+}
+/*------------------------------------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------SEARCH FORM*/
+/*------------------------------------------------------------------------------------------------------*/
+#globalBody[search="disabled"] form[data-encore-id="formInputIcon"]{ 
+  visibility: hidden;
+  display:none; 
+}
+ 
+/*------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------SPOTIFY MAIN PAGE CUSTOMIZATION*/
+/*------------------------------------------------------------------------------------------------------*/
+
+#globalBody[mainview="home"] #mainpage{
+    #SearchForm {
+        all:unset;
+        >span>div{
+            padding-inline:0px;
+
+            input {
+                border-radius:0px;
+            }
+        }
+    }
+    .main-view-container { /*main page adjustment to fit*/
+        will-change:scale;
+        transform-origin: top left;
+        transform: scale(2) ;
+        width: 50%;
+
+        section[data-testid="artist-page"] >:nth-child(1) >:nth-child(1){/*Make artist logo smaller on artist page*/
+            min-width:20vh;
+            height:20vh;
+        }
+        .under-main-view>div>div[data-testid="background-image"]{
+
+            width:50vw;
+            height:16vh;
+
+        }
+
+    }
+    .contentSpacing{ /*remove giant spaces between content*/
+        --shelf-gap-vertical: 0px;
+        padding:3%;
+    }
+
+    .Shelf:not([aria-label="Browse all"]) > div{ /*Make albums visible for daily mix etc*/
+        display:flex;
+        overflow-x:auto;
+        scrollbar-width:none;
+        >div{
+            display:flex;
+            min-width:22vw;
+
+        }
+        img{ /*make logos not cut*/
+            border-radius:0px;
+        }
+    }
+    .os-size-observer + div { /*Fix scrolling x-axis on artist page*/
+        overflow-x: hidden !important;
+    }
+
+    .os-scrollbar{ /*Hide all scrollbars on main page ig*/
+        visibility: hidden;
+    }
+
+    .contentSpacing div[role="grid"]>div[role="presentation"]:has(div[data-testid="column-header-context-menu"]){ /*Remove #, Title, Time etiquettes*/
+        visibility: hidden;
+        position:absolute;
+
+    }
+    .contentSpacing:has(div[data-testid="playlist-tracklist"]),
+    .contentSpacing:has(div[aria-label="popular tracks"]),
+    .contentSpacing:has(div[data-testid="track-list"]){ /*create illusion of playing by clicking track*/
+        div[role="row"]{
+            &:hover{
+                transform: scale(0.99);
+            }
+            transition: transform 50ms ease-in;
+        }
+        div[role="row"]
+        {
+
+            margin-inline:-5vw;
+            >:nth-child(1){
+                background-color:transparent; /*Disable gray highlight of the track*/
+                >:nth-child(2){ /*Disable pointer events for track name and artist*/
+                    pointer-events: none;
+                }
+
+                >:nth-child(1){/*Enlargen play button for track*/
+
+                    >div{ /*Div that holds the button*/
+
+                        position:relative;
+                        height:100%;
+                        >button{ /*Make button span all width of screen*/
+                            background-color:transparent;
+                            position:absolute;
+                            left:0px;
+                            height:100%;
+                            width:100vw;
+                            z-index:2;
+                            svg{ /*Hide the play button triangle shape*/
+                                visibility: hidden;
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+    }
+    #searchPage {
+
+        div[data-testid="track-list"]{
+            div[role="row"]
+            {
+                margin-inline:0px; /*undo margin fix for tracklist*/
+            }
+
+        }
+        section[aria-label="Top result"]{
+            visibility: hidden;
+            position:absolute;
+        }
+    }
+    .under-main-view+div{ /*Add bottom padding*/
+        margin-bottom:0vh;
+    }
+
+    .main-view-container__mh-footer-container >nav>div{  /*Hide footer info download spotify free credits insta etc*/
+        all:unset;
+        display:block;
+        height:0px !important;
+        overflow: hidden !important;
+    }
+}
+/*------------------------------------------------------------------------------------------------------*/

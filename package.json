@@ -1,0 +1,33 @@
+{
+  "name": "spotifyimmersive",
+  "version": "1.0.0",
+  "description": "Reverse-engineered the Spotify Web Player (desktop site) to inject custom JavaScript via a Firefox Extension, adapting the interface for a more mobile-friendly experience. This is done entirely client-side—no API usage, no server interaction, and no redistribution of Spotify assets.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"build": "webpack --config webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ttrahilis/SpotifyImmersive.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ttrahilis/SpotifyImmersive/issues"
+  },
+  "homepage": "https://github.com/Ttrahilis/SpotifyImmersive#readme",
+  "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "glob": "^11.0.1",
+    "style-loader": "^4.0.0",
+    "terser-webpack-plugin": "^5.3.14",
+    "webpack": "^5.99.5",
+    "webpack-cli": "^6.0.1"
+  }
+  
+}

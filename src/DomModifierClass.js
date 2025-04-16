@@ -49,3 +49,5 @@ class DomModifierClass {
 		return new_button;
 	}
 }
+
+export default DomModifierClass;

@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "SpotifyImmersive",
+  "version": "1.0.0.1",
+  "permissions": [
+    "tabs",
+    "activeTab"
+  ], 
+  "content_scripts": [
+    {
+      "matches": ["*://*.spotify.com/*"],
+      "js": ["bundle.js"],
+	  "css": ["style.css","about_tab.css","navbar.css","controlbar.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  }
+}
