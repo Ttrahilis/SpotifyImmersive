@@ -1,10 +1,13 @@
 # SpotifyImmersive
-Reverse-engineered the Spotify Web Player (desktop site) to inject custom JavaScript via a Firefox Extension, adapting the interface for a more mobile-friendly experience. This is done entirely client-side—no API usage, no server interaction, and no redistribution of Spotify assets.
+Reverse-engineered the Spotify Web Player (desktop site) to inject custom JavaScript via a Firefox Extension or Tampermonkey Script, adapting the interface for a more mobile-friendly experience. This is done entirely client-side—no API usage, no server interaction, and no redistribution of Spotify assets.
 
 # Purpose:
 Educational use only. Demonstrates DOM manipulation and UI adaptation techniques using browser extensions.
-# Download Firefox Extension
- - coming soon
+# Download SpotifyImmersive
+## as a Tampermonkey Script 
+ - [Download the latest versoion of the Tampermonkey Script Here](https://github.com/Ttrahilis/SpotifyImmersive/releases/download/latest/spotifyimmersive-latest.xpi)
+## as a Firefox Extension 
+ - [Download the latest version of the Firefox Extension Here](https://github.com/Ttrahilis/SpotifyImmersive/releases/download/latest/spotifyimmersive-latest.xpi)
 # How to Contribute
 ### Dependencies
 - Firefox
