@@ -8,6 +8,8 @@
 // @run-at       document-end
 // @grant GM_addStyle
 // ==/UserScript==
+
+
 //Does all the Changes of values we used to mark the states of the dom
 class DomModifierClass {
 	globalBody;
