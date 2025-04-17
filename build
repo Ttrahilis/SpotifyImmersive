@@ -1,8 +1,0 @@
-#!/bin/bash
-#Build from src/, save to builds/
-output=$(web-ext build --source-dir=src/ --artifacts-dir=builds/)
-
-newfile="$(echo $output | grep -o 'builds\\spotifyimmersive-[0-9]\+\(\.[0-9]\+\)*\.zip')"
-
-cp "$newfile" builds/spotifyimmersive-latest.xpi
-mv "$newfile" "${newfile%.zip}.xpi"

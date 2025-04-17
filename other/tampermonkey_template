@@ -1,0 +1,12 @@
+// ==UserScript==
+// @name         SpotifyImmersiveCSSOnly
+// @namespace    https://github.com/ttrahilis/SpotifyImmersive
+// @version      INSERT_VERSION
+// @description  Mobile Interface injection for Spotify Desktop Site
+// @author       ttrahilis
+// @match        https://open.spotify.com/*
+// @run-at       document-end
+// @grant GM_addStyle
+// ==/UserScript==
+
+

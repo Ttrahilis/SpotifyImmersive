@@ -1,0 +1,41 @@
+# Step 1: Extract the JS and CSS filenames and store them in arrays
+
+#Get js_names and css_names from manifest
+js_names=($(cat ./src/manifest.json | grep -P '"js"' | grep -Po "\"[\w]*\.js\""))
+css_names=($(cat ./src/manifest.json | grep -P '"css"' | grep -Po "\"[\w]*\.css\""))
+#Get version from manifest
+version=$(cat ./src/manifest.json | grep -P '"version"' | grep -Po "(\d+\.)+\d+")
+
+js_merged_path='./tmp/js_merged'
+css_merged_path='./tmp/css_merged'
+tampermonkey_template_path='./other/tampermonkey_template'
+final_file_path='./builds/script/spotifyimmersive_tampermonkey.js'
+
+rm -f ${js_merged_path}
+rm -f ${css_merged_path}
+rm -f ${final_file_path}.js
+
+# Step 2: Append the contents of JS files to js_merged_path
+for js_file in "${js_names[@]}"; do
+    js_file=$(echo $js_file | tr -d '"')  # Remove quotes
+    cat "./src/$js_file" >> ${js_merged_path}
+done
+
+# Step 3: Append the contents of CSS files to css_merged_path
+for css_file in "${css_names[@]}"; do
+    css_file=$(echo $css_file | tr -d '"')  # Remove quotes
+    cat "./src/$css_file" >> ${css_merged_path}
+done
+
+#Create final file
+
+cp ${tampermonkey_template_path} ${final_file_path}
+
+#Replace version with version from manifest
+
+sed -i "s/INSERT_VERSION/$version/g" ${final_file_path}
+cat ${js_merged_path} >> ${final_file_path}
+
+
+#Replace //INSERT_GM_ADDSTYLE_HERE with the Gm Addstyle function and the Css that gets added.
+sed -i -e "\/\/INSERT_GM_ADDSTYLE_HERE/{r ${css_merged_path}" -e 'i\GM_addStyle(`' -e 'a\\n`);' -e 'd}' ${final_file_path}

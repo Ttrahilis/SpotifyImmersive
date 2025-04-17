@@ -427,6 +427,9 @@ window.onload = () => {
 	repeatUntilTrue(divideSearchBar);
 	repeatUntilTrue(TrackColor);
 	//execution continues normally, as if we launched async threads.
+	//DO NOT DELETE THIS COMMENT
+	//INSERT_GM_ADDSTYLE_HERE
+	//DO NOT DELETE THIS COMMENT
 	ag.initialise_basic_elements(); 
 	ag.addScrollBarBehavior();
 	
@@ -434,7 +437,7 @@ window.onload = () => {
 
 	// Select all link elements that reference stylesheets-------------------
 	const links = document.querySelectorAll('link[rel="stylesheet"]');
-
+	
 	// Loop through the links and remove the ones we dont need based on their name
 	links.forEach(link => {
 		if (link.href.includes('dwp-lyrics-cinema-mode-container') || link.href.includes('dwp-full-screen-mode-container')) { // Match the CSS file with the substring
