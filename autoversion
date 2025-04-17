@@ -1,0 +1,24 @@
+#!/bin/bash
+manifest_path
+
+currdate=$(date +%Y.%m.%d)
+echo -e "current date" $currdate "\n\n" 
+
+#echo old version:$oldversion
+oldversion=$(cat ./src/manifest.json | grep -P '"version"' | grep -Po "(\d+\.)+\d+")
+echo old version: $oldversion
+olddate=$(echo $oldversion | grep -m 1 -Po '\d+\.\d+\.\d+')
+echo old date: $olddate
+oldincrement="${oldversion//${olddate}.}"
+echo "oldincrement: $oldincrement"
+
+if [ "$olddate" == "$currdate" ]; then
+  newversion="$currdate"."$((oldincrement+1))"
+else
+  newversion="${currdate}.0"
+fi
+
+echo -e "newversion: $newversion\n"
+
+#save new version into manifest.json
+perl -pi -E 's/("version":\s*").*("\s*,)/\1\Q\E'"${newversion}"'\2/' src/manifest.json
