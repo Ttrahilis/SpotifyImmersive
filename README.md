@@ -37,5 +37,7 @@ Educational use only. Demonstrates DOM manipulation and UI adaptation techniques
 `./run`
 ### Build instructions
 - Make sure you can [run](###Run-instructions) the project first
-- To build the project:
-`./build`
+- To build the project into an extension (.xpi):  
+`./build_extension`
+- To build the project into a (Tampermonkey-compatible) script (.js):  
+`./build_script`
