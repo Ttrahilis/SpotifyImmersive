@@ -1,16 +1,7 @@
 #!/bin/bash
 
 #manifest_path
-input="$1" 
-echo() {
-    if [ "$input" == "get" ]; then
-		#Ignore prints until the end to give output
-		:
-    else
-        # Normal echo behavior
-        /bin/echo "$@"
-    fi
-}
+
 currdate=$(date +%Y.%m.%d)
 echo -e "current date" $currdate "\n\n" 
 
@@ -33,9 +24,6 @@ echo -e "newversion: $newversion\n"
 #save new version into manifest.json
 perl -pi -E 's/("version":\s*").*("\s*,)/\1\Q\E'"${newversion}"'\2/' src/manifest.json
 
-echo() { #Reset echo 
-    /bin/echo "$@" 
-    
-}
-
-printf $newversion
+printf $newversion > version
+./build_script
+./build_extension

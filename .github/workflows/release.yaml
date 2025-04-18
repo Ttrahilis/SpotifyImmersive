@@ -1,0 +1,45 @@
+name: Update Release with Files
+
+on:
+  push:
+    branches:
+      - main  # Trigger only when pushing to main
+
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Upload .js and .xpi files to release
+      run: |
+        # Define the path to the files
+        JS_FILE_PATH="builds\extension\spotifyimmersive-latest.xpi"
+        XPI_FILE_PATH="builds\script\spotifyimmersive_tampermonkey.js"
+        VERSION=$(cat version)
+        
+        # Create a new release with the tag 'latest' or use an existing one
+        curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -d '{
+            "tag_name": "latest",  # Tag name
+            "name": "Latest release $VERSION",
+            "body": "Automated release with .js and .xpi files"
+          }' \
+          https://api.github.com/repos/${{ github.repository }}/releases
+
+        # Upload the files to the release
+        RELEASE_ID=$(curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/releases/tags/latest \
+            | jq '.id')
+
+        curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @"${JS_FILE_PATH}" \
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=$(basename $JS_FILE_PATH)"
+
+        curl -X POST -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/octet-stream" \
+            --data-binary @"${XPI_FILE_PATH}" \
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=$(basename $XPI_FILE_PATH)"

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SpotifyImmersiveScript
 // @namespace    https://github.com/ttrahilis/SpotifyImmersive
-// @version      1.0.0.1
+// @version      2025.04.18.33
 // @description  Mobile Interface injection for Spotify Desktop Site
 // @author       ttrahilis
 // @match        https://open.spotify.com/*

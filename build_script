@@ -1,3 +1,4 @@
+#!/bin/bash
 # Step 1: Extract the JS and CSS filenames and store them in arrays
 
 #Get js_names and css_names from manifest
