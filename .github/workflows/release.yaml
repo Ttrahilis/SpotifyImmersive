@@ -1,4 +1,4 @@
-name: Auto Release
+name: Auto Publish Latest Release
 
 on:
   push:
@@ -13,14 +13,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+      
+      - name: Read version from file
+        id: get_version
+        run: |
+          VERSION=$(cat version)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          
       - name: Create or update release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: latest
-          name: latest
+          name: "latest v${{ steps.get_version.outputs.version }}"
           files: |
             ./builds/script/spotifyimmersive_tampermonkey.js
-            .\builds\extension\spotifyimmersive-latest.xpi
+            ./builds/extension/spotifyimmersive-latest.xpi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
