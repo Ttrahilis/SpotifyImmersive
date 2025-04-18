@@ -1,5 +1,10 @@
 name: Upload Release Assets
 
+permissions:
+  contents: write  # Allow the action to create releases and upload assets
+  id-token: write  # Necessary for certain authentication processes
+  actions: read    # Allow reading action logs and details
+
 on:
   push: 
     tags:
