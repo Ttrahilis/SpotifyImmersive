@@ -35,8 +35,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/latest.xpi
-        asset_name: latest.xpi
+        asset_path: ./builds/extension/spotifyimmersive-latest.xpi
+        asset_name: spotifyimmersive-latest.xpi
         asset_content_type: application/x-xpinstall
 
     - name: Upload Tampermonkey Script
@@ -45,6 +45,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/tampermonkey-script.js
-        asset_name: tampermonkey-script.js
+        asset_path: ./builds/script/spotifyimmersive_tampermonkey.js
+        asset_name: spotifyimmersive_tampermonkey.js
         asset_content_type: text/javascript
