@@ -2,6 +2,8 @@ name: Upload Release Assets
 
 on:
   push:
+    branches:
+      - main 
     tags:
       - 'latest'  # only for tags like v1.0.0, v2.1, etc.
 
