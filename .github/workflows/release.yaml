@@ -1,33 +1,50 @@
-name: Upload Release Assets
-
-permissions:
-  contents: write  # Allow the action to create releases and upload assets
-  id-token: write  # Necessary for certain authentication processes
-  actions: read    # Allow reading action logs and details
+name: Update Latest Release
 
 on:
-  push: 
-    tags:
-      - 'latest'  # only for tags like v1.0.0, v2.1, etc.
+  push:
+    branches:
+      - main
 
 jobs:
-  upload-assets:
+  update-release:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Build Assets
-        run: |
-          mkdir output
-          echo "Release files" > output/info.txt
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
 
-      - name: Upload to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            builds/script/spotifyimmersive_tampermonkey.js
-            builds/extension/spotifyimmersive-latest.xpi
-              
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Create or Update Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: latest
+        release_name: 'Latest Release'
+        draft: false
+        prerelease: false
+
+    - name: Upload Files to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/latest.xpi
+        asset_name: latest.xpi
+        asset_content_type: application/x-xpinstall
+
+    - name: Upload Tampermonkey Script
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/tampermonkey-script.js
+        asset_name: tampermonkey-script.js
+        asset_content_type: text/javascript
