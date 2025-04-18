@@ -1,47 +1,28 @@
-name: Update Release with Files
+name: Upload Release Assets
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'latest'  # only for tags like v1.0.0, v2.1, etc.
 
 jobs:
-  update-release:
+  upload-assets:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-    - name: Install jq
-      run: |
-        sudo apt-get update && sudo apt-get install -y jq
+      - name: Build Assets
+        run: |
+          mkdir output
+          echo "Release files" > output/info.txt
 
-    - name: Upload .js and .xpi files to release
-      run: |
-        JS_FILE_PATH="builds/extension/spotifyimmersive-latest.xpi"
-        XPI_FILE_PATH="builds/script/spotifyimmersive_tampermonkey.js"
-        VERSION=$(cat version)
-
-        # create (or update) the release tagged “latest”
-        RESPONSE=$(curl -s -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d "{\"tag_name\":\"latest\",\"name\":\"Latest release $VERSION\",\"body\":\"Automated release with .js and .xpi files\"}" \
-          https://api.github.com/repos/${{ github.repository }}/releases)
-
-        RELEASE_ID=$(echo "$RESPONSE" | jq -r .id)
-
-        # upload the .xpi
-        curl -s -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/octet-stream" \
-          --data-binary @"$JS_FILE_PATH" \
-          "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=$(basename "$JS_FILE_PATH")"
-
-        # upload the .js
-        curl -s -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/octet-stream" \
-          --data-binary @"$XPI_FILE_PATH" \
-          "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=$(basename "$XPI_FILE_PATH")"
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            builds/script/spotifyimmersive_tampermonkey.js
+            builds/extension/spotifyimmersive-latest.xpi
+              
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
