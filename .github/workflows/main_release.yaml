@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Needed to create or update releases
-
+    env:
+      AUTOVERSION_PATH: .github/workflows/scripts/autoversion
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,13 +23,13 @@ jobs:
         
       - name: Make scripts executable
         run: |
-            chmod +x ./autoversion
+            chmod +x $AUTOVERSION_PATH
             chmod +x ./getversion
             chmod +x ./build_extension
             chmod +x ./build_script
         
       - name: Increment version and build files
-        run: ./autoversion 
+        run: $AUTOVERSION_PATH
       
       - name: Get version
         id: get_version
