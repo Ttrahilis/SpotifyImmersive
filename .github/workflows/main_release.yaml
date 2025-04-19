@@ -1,4 +1,4 @@
-name: Auto Publish Latest Release
+name: Auto Publish Latest Main Release
 
 on:
   push:
@@ -23,9 +23,10 @@ jobs:
             chmod +x ./build_extension
             chmod +x ./build_script
         
-      - name: Increment version and build
+      - name: Build current version
         run: ./autoversion
-        
+      
+      - name:
       - name: Read version from file
         id: get_version
         run: |

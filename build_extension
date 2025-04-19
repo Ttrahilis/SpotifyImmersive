@@ -3,6 +3,11 @@
 source="src/"
 destination="builds/extension/"
 mkdir -p $destination
+newversion=$(./getversion)
+#replace version with version from version file
+perl -pi -E 's/("version":\s*").*("\s*,)/\1\Q\E'"${newversion}"'\2/' src/manifest.json
+
+#build manifest
 output=$(web-ext build --source-dir="$source" --artifacts-dir="$destination" --overwrite-dest)
 
 mv "$destination"/*.zip "$destination"/spotifyimmersive-latest.xpi

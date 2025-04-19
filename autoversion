@@ -1,29 +1,30 @@
 #!/bin/bash
 
-#manifest_path
-
 currdate=$(date +%Y.%m.%d)
-echo -e "current date" $currdate "\n\n" 
+echo -e "current date: $currdate\n"
 
-#echo old version:$oldversion
-oldversion=$(cat ./src/manifest.json | grep -P '"version"' | grep -Po "(\d+\.)+\d+")
-echo old version: $oldversion
-olddate=$(printf $oldversion | grep -m 1 -Po '\d+\.\d+\.\d+')
-echo old date: $olddate
-oldincrement="${oldversion//${olddate}.}"
-echo "oldincrement: $oldincrement"
+# get latest tag matching the pattern YYYY.MM.DD.*
+latest_tag=$(git tag -l "${currdate}.*" | grep -v '^latest$' | sort -V | tail -n 1)
+echo "latest tag: $latest_tag"
 
-if [ "$olddate" == "$currdate" ]; then
-  newversion="$currdate"."$((oldincrement+1))"
-else
+#if it doesnt exist make it
+if [ -z "$latest_tag" ]; then
   newversion="${currdate}.0"
+else #if it exists increment it
+  oldincrement=$(echo "$latest_tag" | awk -F'.' '{print $4}')
+  newversion="${currdate}.$((oldincrement + 1))"
 fi
 
 echo -e "newversion: $newversion\n"
 
-#save new version into manifest.json
-perl -pi -E 's/("version":\s*").*("\s*,)/\1\Q\E'"${newversion}"'\2/' src/manifest.json
+# create and push the new tag
+git tag "$newversion"
+git push origin "$newversion"
+
 
 printf $newversion > version
+
+# optional: use the version in build steps
 ./build_script
 ./build_extension
+

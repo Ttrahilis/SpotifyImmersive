@@ -1,0 +1,5 @@
+#!/bin/bash
+
+latest_tag=$(git tag -l | grep -v '^latest$' | grep -Po "\d+\.\d+\.\d+\.\d+" | sort -V | tail -n 1)
+echo $latest_tag
+

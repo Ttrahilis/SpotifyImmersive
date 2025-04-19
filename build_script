@@ -4,8 +4,8 @@
 #Get js_names and css_names from manifest
 js_names=($(cat ./src/manifest.json | grep -P '"js"' | grep -Po "\"[\w]*\.js\""))
 css_names=($(cat ./src/manifest.json | grep -P '"css"' | grep -Po "\"[\w]*\.css\""))
-#Get version from manifest
-version=$(cat ./src/manifest.json | grep -P '"version"' | grep -Po "(\d+\.)+\d+")
+#Get version from version file
+version=$(./getversion)
 mkdir -p tmp
 js_merged_path='./tmp/js_merged'
 css_merged_path='./tmp/css_merged'
@@ -32,7 +32,7 @@ done
 
 cp ${tampermonkey_template_path} ${final_file_path}
 
-#Replace version with version from manifest
+#Replace script version with version from version file
 
 sed -i "s/INSERT_VERSION/$version/g" ${final_file_path}
 cat ${js_merged_path} >> ${final_file_path}
