@@ -24,7 +24,7 @@ jobs:
             chmod +x ./build_script
         
       - name: Increment version and build
-        run: ./autoversion
+        run: ./build_extension
         
       - name: Read version from file
         id: get_version
