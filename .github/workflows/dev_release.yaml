@@ -1,9 +1,9 @@
-name: Auto Publish Latest Stable Release on Main Branch Push
+name: Auto Publish Latest Dev Release on Dev Branch Push
 
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   release:
@@ -38,8 +38,8 @@ jobs:
       - name: Create or update release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: latest
-          name: "Latest Stable Release: v${{ steps.get_version.outputs.version }}"
+          tag_name: dev
+          name: "Latest Developer Release (POTENTIALLY UNSTABLE)(: v${{ steps.get_version.outputs.version }}"
           files: |
             ./builds/script/spotifyimmersive_tampermonkey.js
             ./builds/extension/spotifyimmersive-latest.xpi
