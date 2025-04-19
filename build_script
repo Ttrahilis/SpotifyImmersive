@@ -6,7 +6,7 @@ js_names=($(cat ./src/manifest.json | grep -P '"js"' | grep -Po "\"[\w]*\.js\"")
 css_names=($(cat ./src/manifest.json | grep -P '"css"' | grep -Po "\"[\w]*\.css\""))
 #Get version from manifest
 version=$(cat ./src/manifest.json | grep -P '"version"' | grep -Po "(\d+\.)+\d+")
-
+mkdir -p tmp
 js_merged_path='./tmp/js_merged'
 css_merged_path='./tmp/css_merged'
 tampermonkey_template_path='./other/tampermonkey_template'
