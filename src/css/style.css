@@ -311,7 +311,13 @@ div#main>div {
     .under-main-view+div{ /*Add bottom padding*/
         margin-bottom:0vh;
     }
-
+    .main-view-container__scroll-node{
+        overflow-x:hidden !important;
+    }
+    .main-view-container__scroll-node-child{
+        overflow-x:hidden !important;
+    }
+    
     .main-view-container__mh-footer-container >nav>div{  /*Hide footer info download spotify free credits insta etc*/
         all:unset;
         display:block;
