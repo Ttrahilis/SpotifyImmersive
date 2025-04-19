@@ -11,6 +11,9 @@ Educational use only. Demonstrates DOM manipulation and UI adaptation techniques
 # How to Contribute
 ### Dependencies
 - Firefox
+  ## For Building
+  - Node.js
+  - `npm install -g web-ext`
 
 ### Run-instructions
 - Open Git Bash.
