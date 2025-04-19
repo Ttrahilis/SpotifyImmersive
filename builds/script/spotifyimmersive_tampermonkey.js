@@ -6,8 +6,8 @@
 // @author       ttrahilis
 // @match        https://open.spotify.com/*
 // @run-at       document-end
-// @updateURL    https://github.com/Ttrahilis/SpotifyImmersive/releases/download/latest/spotifyimmersive_tampermonkey.js
-// @downloadURL  https://github.com/Ttrahilis/SpotifyImmersive/releases/download/latest/spotifyimmersive_tampermonkey.js
+// @updateURL    https://github.com/Ttrahilis/SpotifyImmersive/releases/download/dev/spotifyimmersive_tampermonkey.js
+// @downloadURL  https://github.com/Ttrahilis/SpotifyImmersive/releases/download/dev/spotifyimmersive_tampermonkey.js
 // @grant GM_addStyle
 // ==/UserScript==
 
