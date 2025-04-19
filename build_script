@@ -38,7 +38,7 @@ githubURL="https://github.com/Ttrahilis/SpotifyImmersive/releases/download/lates
 #overwrite with Dev Url if u are on DEV
 branch="$(git rev-parse --abbrev-ref HEAD)"
 echo branch: $branch
-if [ $branch = "dev" ]; then
+if echo $branch | grep -qE '^(dev|heads/dev)$'; then
   githubURL="https://github.com/Ttrahilis/SpotifyImmersive/releases/download/dev/spotifyimmersive_tampermonkey.js"
 fi
 echo added the $githubURL url
