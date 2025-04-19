@@ -17,6 +17,9 @@ jobs:
       - name: Install web-ext
         run: npm install -g web-ext
         
+      - name: Make autoversion executable
+        run: chmod +x ./autoversion
+        
       - name: Increment version and build
         run: ./autoversion
         
