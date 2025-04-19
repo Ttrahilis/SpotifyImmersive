@@ -41,7 +41,9 @@ class DomModifierClass {
 	createButton(button_id,parent,svg_path){ //Creates a button inside a parent container with an icon based on svg data
 		
 		let new_button = document.createElement('button');
-                
+        if (!new_button){
+			return 0;
+		}        
 		new_button.id=button_id;new_button.style.cursor = 'pointer'; new_button.style.outline = 'none'; new_button.style.border = 'none';
 		parent.appendChild(new_button);
 		new_button.appendChild(this.createSVGWithPath(svg_path));
