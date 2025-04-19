@@ -2,8 +2,8 @@
 # Step 1: Extract the JS and CSS filenames and store them in arrays
 
 #Get js_names and css_names from manifest
-js_names=($(cat ./src/manifest.json | grep -P '"js"' | grep -Po "\"[\w]*\.js\""))
-css_names=($(cat ./src/manifest.json | grep -P '"css"' | grep -Po "\"[\w]*\.css\""))
+js_names=($(cat ./src/manifest.json | grep -P '"js"' | grep -Po "\"[\w\/]*\.js\""))
+css_names=($(cat ./src/manifest.json | grep -P '"css"' | grep -Po "\"[\w\/]*\.css\""))
 #Get version from version file
 version=$(./getversion)
 mkdir -p tmp
