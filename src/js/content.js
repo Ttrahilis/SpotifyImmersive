@@ -31,7 +31,7 @@ function debounce(func, delay) {
 //function 'foo' should return true when it accomplishes its goals
 async function repeatUntilTrue(fn) {
   while (!(await fn())) {
-	  //Resume app activity for 1000 seconds
+	  //Resume app activity for some seconds
 	  await new Promise(res => setTimeout(res, 1000));
   }
   return true;
@@ -134,8 +134,8 @@ async function divideSearchBar () {
 			if (!document.querySelector(`#globalBody form[data-encore-id="formInputIcon"]`)){
 				return;
 			}
-			if (browseButtonNew){ //If it already exists dont add it again
-			return true;
+			if (document.querySelector(`#browseButtonNew`)){ //If it already exists dont add it again
+				return true;
 			}
 			let browseButtonNew = DomModifier.createButton("browseButtonNew",globalNavBar,'M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.42768 3.27893 10.533 3.27893C14.6383 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6383 17.8369 10.533 17.8369C6.42768 17.8369 3.12598 14.5636 3.12598 10.5579Z');
 			if (!browseButtonNew){
@@ -355,9 +355,9 @@ async function defineLogic (){
 async function addLibraryButton(){ 
 	let globalNavBar = document.querySelector('#global-nav-bar');
 	if (globalNavBar) {
-		if (library_button){ //If it already exists dont add it again
+		if (document.querySelector(`#library-toggle-button`)){ //If it already exists dont add it again
 			return true;
-		}
+		} 
 		let library_button = DomModifier.createButton("library-toggle-button",globalNavBar,'M14.5 2.134a1 1 0 0 1 1 0l6 3.464a1 1 0 0 1 .5.866V21a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1V3a1 1 0 0 1 .5-.866zM16 4.732V20h4V7.041l-4-2.309zM3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zm6 0a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1z');
 		if (!library_button){
 			return;
