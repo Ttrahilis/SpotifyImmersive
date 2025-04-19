@@ -11,7 +11,7 @@ jobs:
     permissions:
       contents: write  # Needed to create or update releases
     env:
-      AUTOVERSION_PATH: .github/workflows/scripts/autoversion
+      AUTOVERSION_PATH: .github/workflows/autoversion
     steps:
       - uses: actions/checkout@v4
         with:
