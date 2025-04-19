@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         SpotifyImmersiveScript
 // @namespace    https://github.com/ttrahilis/SpotifyImmersive
-// @version      2025.04.19.8
+// @version      2025.04.19.10
 // @description  Mobile Interface injection for Spotify Desktop Site
 // @author       ttrahilis
 // @match        https://open.spotify.com/*
 // @run-at       document-end
-// @updateURL   https://github.com/Ttrahilis/SpotifyImmersive/releases/download/latest/spotifyimmersive_tampermonkey.js
-// @downloadURL https://github.com/Ttrahilis/SpotifyImmersive/releases/download/latest/spotifyimmersive_tampermonkey.js
+// @updateURL    https://github.com/Ttrahilis/SpotifyImmersive/releases/download/dev/spotifyimmersive_tampermonkey.js
+// @downloadURL  https://github.com/Ttrahilis/SpotifyImmersive/releases/download/dev/spotifyimmersive_tampermonkey.js
 // @grant GM_addStyle
 // ==/UserScript==
 

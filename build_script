@@ -32,8 +32,14 @@ done
 
 cp ${tampermonkey_template_path} ${final_file_path}
 
+#Replace script URL with main release url
+githubURL="https://github.com/Ttrahilis/SpotifyImmersive/releases/download/latest/spotifyimmersive_tampermonkey.js"
+#overwrite with Dev Url if u are on DEV
+if [ "$(git rev-parse --abbrev-ref HEAD)" = "dev" ]; then
+  githubURL="https://github.com/Ttrahilis/SpotifyImmersive/releases/download/dev/spotifyimmersive_tampermonkey.js"
+fi
 #Replace script version with version from version file
-
+sed -i "s|INSERT_GIT_URL|$githubURL|g" ${final_file_path}
 sed -i "s/INSERT_VERSION/$version/g" ${final_file_path}
 cat ${js_merged_path} >> ${final_file_path}
 
