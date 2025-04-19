@@ -3,7 +3,7 @@
 source="src/"
 destination="builds/extension/"
 
-output=$(web-ext build --source-dir="$source" --artifacts-dir="$destination")
+output=$(web-ext build --source-dir="$source" --artifacts-dir="$destination" --overwrite-dest)
 
 newfile="$(echo $output | grep -o "${destination//\//\\\\}"'spotifyimmersive-[0-9]\+\(\.[0-9]\+\)*\.zip')"
 
