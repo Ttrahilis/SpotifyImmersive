@@ -23,15 +23,12 @@ jobs:
             chmod +x ./build_extension
             chmod +x ./build_script
         
-      - name: Build current version
+      - name: Build with current version
         run: ./autoversion
-      
-      - name:
-      - name: Read version from file
-        id: get_version
-        run: |
-          VERSION=$(cat version)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # this is required to fetch tags
+          fetch-tags: true
           
       - name: Create or update release
         uses: softprops/action-gh-release@v1
