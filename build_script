@@ -39,6 +39,7 @@ githubURL="https://github.com/Ttrahilis/SpotifyImmersive/releases/download/lates
 if [ "$(git rev-parse --abbrev-ref HEAD)" = "dev" ]; then
   githubURL="https://github.com/Ttrahilis/SpotifyImmersive/releases/download/dev/spotifyimmersive_tampermonkey.js"
 fi
+echo added the $githubURL url
 #Replace script version with version from version file
 sed -i "s|INSERT_GIT_URL|$githubURL|g" ${final_file_path}
 sed -i "s/INSERT_VERSION/$version/g" ${final_file_path}
