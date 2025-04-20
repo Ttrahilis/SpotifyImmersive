@@ -28,12 +28,10 @@ function debounce(func, delay) {
 //until 'foo' returns the boolean value true;
 //while letting the background processes continue
 //function 'foo' should return true when it accomplishes its goals
-async function repeatUntilTrue(fn) {
-  let startingtimeout=3000;
+async function repeatUntilTrue(fn) { 
   while (!(await fn())) {
 	  //Resume app activity for some seconds
-	  await new Promise(res => setTimeout(res, startingtimeout));
-	  startingtimeout=500;
+	  await new Promise(res => setTimeout(res, 1000)); 
   }
   return true;
 }
