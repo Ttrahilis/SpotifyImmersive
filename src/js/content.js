@@ -31,7 +31,7 @@ function debounce(func, delay) {
 async function repeatUntilTrue(fn) {
   while (!(await fn())) {
 	  //Resume app activity for some seconds
-	  await new Promise(res => setTimeout(res, 1000));
+	  await new Promise(res => setTimeout(res, 50));
   }
   return true;
 }
