@@ -29,13 +29,14 @@ function debounce(func, delay) {
 //while letting the background processes continue
 //function 'foo' should return true when it accomplishes its goals
 async function repeatUntilTrue(fn) {
+  let startingtimeout=3000;
   while (!(await fn())) {
 	  //Resume app activity for some seconds
-	  await new Promise(res => setTimeout(res, 50));
+	  await new Promise(res => setTimeout(res, startingtimeout));
+	  startingtimeout=500;
   }
   return true;
 }
-
 
 
 
@@ -383,12 +384,15 @@ window.onload = () => {
 	sys = new System();
 	ag = new Agent(); 
 	
-	repeatUntilTrue(assignIDs);
-	repeatUntilTrue(defineLogic);
-	repeatUntilTrue(addLibraryButton);
-	repeatUntilTrue(addControlBarBehavior);
-	repeatUntilTrue(divideSearchBar);
-	repeatUntilTrue(TrackColor);
+	if (repeatUntilTrue(assignIDs)){
+		repeatUntilTrue(defineLogic);
+		repeatUntilTrue(addLibraryButton);
+		repeatUntilTrue(addControlBarBehavior);
+		repeatUntilTrue(divideSearchBar); 
+		if (repeatUntilTrue(TrackColor)){ 
+		}
+	}
+	
 	//execution continues normally, as if we launched async threads.
 	//DO NOT DELETE THIS COMMENT
 	//INSERT_GM_ADDSTYLE_HERE
