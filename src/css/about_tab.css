@@ -23,15 +23,14 @@
     #Desktop_PanelContainer_Id>div>div{
          >:nth-child(1){
             background: var(--global-color);
+            background: linear-gradient(to bottom, var(--global-color), black 50vh);
         }
+        
     }
 
-    #scrollableContainerAboutTab {
-        background: linear-gradient(to bottom, var(--global-color), black 50vh);
-    }
 }
 
-#globalBody[controlbarexpanded="open"][AboutTabState="now_playing"][visualiser="enabled"] #globalAboutTab {
+#globalBody[controlbarexpanded="open"][AboutTabState="now_playing"][visualiser="enabled"] #globalAboutTab { /*now playing view with visualiser enabled*/
     #Desktop_PanelContainer_Id>div>div{
          >:nth-child(1){
             background:transparent !important;
@@ -65,15 +64,19 @@
             }
             
         }
+        >:nth-child(1)>:nth-child(1)>:nth-child(1){
+            >button,>span>:nth-child(1)>:nth-child(2){ /*remove buttons of fullscreen and abouttabclose*/
+                visibility: hidden;
+                display:none;
+            }
+        }
+        
         .cIUedsmg_cTnTxvOYTKR{
             min-width:100% !important;
         }
         >div>div{
-            display:contents;
-            button{
-                visibility: hidden;
-                display:none;
-            }
+            display:contents;  
+            
             button[data-testid="more-button"]{
                 visibility: visible;
                 display:flex; 
@@ -91,6 +94,7 @@
     div[data-testid="NPV_Panel_OpenDiv"]{
         >:nth-child(1)>:nth-child(1){
             height:50vh;padding-top:20%;
+            height:33vh;
             >:nth-child(2){ /*Hide artist title and gradient*/
                 visibility:hidden;
             }

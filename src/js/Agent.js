@@ -1,11 +1,58 @@
 //Reads/Discovers all the states of the DOM based on complex relationships identified by the programmer
+class ControlBarClass{
+	static controlbarid="globalControlBar"
+	static #controlbar;
+	
+	static MoveControlBar(parent_path){
+		this.getControlBar(); //protect in case controlbar isnt defined
+		let parentnode = document.querySelector('div[data-testid="NPV_Panel_OpenDiv"]'); 
+		if (!parentnode){
+			console.error('parent node not found:' + parentnode);
+			return;
+		}
+		this.#controlbar= parentnode.insertBefore(this.#controlbar,parentnode.children[1]);
+		this.#controlbar.id=this.controlbarid; //set id again.
+		return this.#controlbar;
+	}
+	
+	static RestoreControlBar(parent_path){
+		this.getControlBar();
+		let navbar=document.querySelector(parent_path);
+		if (!navbar){
+			console.log('parent path not found:' + parent_path );
+		}
+		navbar.parentElement.appendChild(this.#controlbar);
+	}
+	
+	static getControlBar(){
+		if (!this.#controlbar){ //for the first time loading controlbar
+			this.#controlbar = document.getElementById(this.controlbarid);
+		}
+		return this.#controlbar;
+	}
+	
+}
+//
+function removeElementsWithAncestor(selector, ancestorDiv) {
+  const elements = document.querySelectorAll(selector); // Select all matching elements
+  
+  elements.forEach((element) => {
+    // Check if ancestorDiv is an ancestor of the current element
+    if (element.closest(ancestorDiv)) {
+      element.remove(); // Remove the element if it has ancestorDiv as an ancestor
+    }
+  });
+  return elements.length;
+}
+
 class Agent{ 
 	globalBody;
 	ShowAboutTab;
 	globalAboutTab;
 	ShowFullLibrary;
 	SearchForm;
-
+	
+	
 	currentUrl="";
 	oldUrl="";
 
@@ -66,7 +113,7 @@ class Agent{
 
 	}
 
-	addScrollBarBehavior(){
+	async addScrollBarBehavior(){
 		const scrollableDiv = document.querySelector('#globalAboutTab div[data-testid="NPV_Panel_OpenDiv"]');
 		if (!scrollableDiv){
 			console.error('addScrollBarBehavior: '+'ScrollableDivNotFound');
@@ -127,6 +174,39 @@ class Agent{
 		document.addEventListener('touchend', () => {
 			isTouching = false; // Reset the state when touch is released
 		});
-
+		
+		return true; //async function
 	}
+	
+	checkAboutTabState(){
+		
+		if (sys.get_currentStateOfControlBar()==true){ //So we dont waste computational power
+			//First check about tab state through control bar's buttons
+			//Old method was to detect html content through about tab, but now control bar is included and will ruin the results unless we exclude it
+			if (document.querySelector('button[data-active="true"][aria-pressed="true"][data-restore-focus-key="device_picker"]')) {
+				sys.set_about_tab_state("device_picker"); 
+			} else if (document.querySelector('button[data-testid="control-button-queue"][data-active="true"]')){
+				sys.set_about_tab_state("queue"); 
+			} else if (document.querySelector('button[data-testid="control-button-npv"][data-active="true"][aria-pressed="true"]')){
+				sys.set_about_tab_state("now_playing");
+			} else{ //When we change about tab state control bar may get wiped, so we fall back to old 'about tab' detection
+				if (document.querySelector('#globalAboutTab div[data-testid="device-picker-row-sidepanel"]')) {
+					sys.set_about_tab_state("device_picker");
+				} else if (document.querySelector('#globalAboutTab [aria-label="Queue"]')){
+					sys.set_about_tab_state("queue");
+				} else if (document.querySelector('#globalAboutTab [aria-label="Now playing view"]')){
+					sys.set_about_tab_state("now_playing");
+				} 
+			}
+			DomModifier.writeToBody('AboutTabState',sys.get_about_tab_state());
+			if (sys.get_about_tab_state()=="queue" || sys.get_about_tab_state()=="device_picker" ){
+				ControlBarClass.RestoreControlBar('#globalAboutTab');
+			} else if (sys.get_about_tab_state()=="now_playing") {
+				ControlBarClass.MoveControlBar('div[data-testid="NPV_Panel_OpenDiv"]');
+			}
+			ag.addScrollBarBehavior();//scroll down to return	
+		}
+		
+	}
+	
 }

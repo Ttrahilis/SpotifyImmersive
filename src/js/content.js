@@ -14,8 +14,7 @@ class BasicInfo{
 	static divsToModify;
 	static unNecessaryCount=0;
 }
-const buttondelay=200; 
-let AboutTabState; //State of about tab
+const buttondelay=200;  
 
 function debounce(func, delay) {
   let timeout;
@@ -36,6 +35,10 @@ async function repeatUntilTrue(fn) {
   }
   return true;
 }
+
+
+
+
 
 // Define an array of objects with your desired selectors and corresponding new IDs
 BasicInfo.divsToModify = [
@@ -255,7 +258,7 @@ async function defineLogic (){
 	let globalAboutTab = document.getElementById('globalAboutTab');
 	let ShowFullLibrary = document.getElementById('ShowFullLibrary');
 	let SearchForm = document.querySelector("#SearchForm");
-	let globalControlBar = document.querySelector("#globalControlBar");
+	let globalControlBar = ControlBarClass.getControlBar();
 	if (globalBody && ShowFullLibrary && globalAboutTab && ShowAboutTab && SearchForm && globalControlBar){
 	}else {
 		return;
@@ -266,66 +269,14 @@ async function defineLogic (){
 	// Call the function to get the primary color
 
 
-	function checkAboutTabState(){
-		
-		if (sys.get_currentStateOfControlBar()==true){ //So we dont waste computational power
-			if (document.querySelector('#globalAboutTab div[data-testid="device-picker-row-sidepanel"]')) {
-				AboutTabState="device_picker";
-			} else if (document.querySelector('#globalAboutTab [aria-label="Queue"]')){
-				AboutTabState="queue";
-			} else if (document.querySelector('#globalAboutTab [aria-label="Now playing view"]')){
-				AboutTabState="now_playing";
-			} 
-			DomModifier.writeToBody('AboutTabState',AboutTabState);
-			if (AboutTabState=="queue" || AboutTabState=="device_picker" ){
-				let stickyDiv = document.getElementById('globalControlBar');
-				if (stickyDiv) {
-					stickyDiv.style.marginBottom = '0';
-				} else {
-					console.error('Sticky Div Not Found');
-				}
-
-
-			} else if (AboutTabState=="now_playing") {
-				ag.addScrollBarBehavior();
-				
-				//FUNCTION TO ADJUST CONTROLBAR---------------------------
-				let scrollableContainer = document.querySelector('#globalAboutTab div[data-testid="NPV_Panel_OpenDiv"]');//div[data-testid="NPV_Panel_OpenDiv"]
-				let stickyDiv = document.getElementById('globalControlBar');
-				if (!stickyDiv){
-					console.error('Sticky Div Not Found2');
-				}
-				if (!scrollableContainer){
-					console.error('scrollableContainer Div Not Found');
-				} 
-				if (scrollableContainer && stickyDiv) {
-					
-					scrollableContainer.id="scrollableContainerAboutTab";
-					scrollableContainer.addEventListener('scroll', function(e) {//scrolltop 100
-						console.log("hello from the other side");
-						let scrollPercentage = ((scrollableContainer.scrollTop*100) / scrollableContainer.clientHeight);
-						console.log('scrollPercentage ' + scrollPercentage);
-						if (AboutTabState=="now_playing" ){
-							// Adjust margin-bottom based on scroll percentage
-							stickyDiv.style.marginBottom = `${scrollPercentage }vh`;
-						} else{
-							stickyDiv.style.marginBottom = '0';
-						}
-					});
-			}
-			//---------------------------------------------------------
-			}
-		}
-		
-	}
+	
 
 	//checkAboutTabState only triggered when we click
 	globalBody.addEventListener("click", function(event) {
 		
 		setTimeout(function() {
-			if (sys.get_currentStateOfControlBar()==true){
-				console.log("should check about tab state");
-				checkAboutTabState();
+			if (sys.get_currentStateOfControlBar()==true){ 
+				ag.checkAboutTabState();
 			}
 			
 		}, 500); // 500ms delay
@@ -400,9 +351,9 @@ function doublescaleandupdateheight(div,transformOrigin,adjustheight) {
 	}
 }
 
-async function addControlBarBehavior() {
+async function addControlBarBehavior() { //Sets trigger that lets user enter about tab
 	
-	let globalControlBar = document.querySelector('#globalControlBar');
+	let globalControlBar = ControlBarClass.getControlBar();
 	let navbar = document.querySelector('#global-nav-bar');
 
 	if (globalControlBar && navbar) {
@@ -423,6 +374,7 @@ async function addControlBarBehavior() {
 	}
 		
 }
+
 
 
 window.onload = () => {
@@ -459,7 +411,7 @@ window.onload = () => {
 
 	console.log("AAAAAAAAAAAAAAPage fully loaded. Executing script...");
 	
-
+	
 	 
 };
 

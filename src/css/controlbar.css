@@ -84,10 +84,14 @@
 
 }
 
-
+#globalBody[controlBarExpanded="open"][AboutTabState="now_playing"] #globalControlBar{
+	transform: scale(1) !important;
+	min-width:100%;
+}
 #globalBody[controlBarExpanded="open"] #globalControlBar{
-
+	order:unset;
     background-color:transparent !important;
+	
 /*     background: linear-gradient(to top, rgba(0, 0, 0, .94) 10%, rgba(0, 0, 0, 0.7)  );
     backdrop-filter: blur(2px); */
     > footer{

@@ -53,12 +53,14 @@ class System {
 	
 	enableControlBar(){
 		if (this.#about_tab==false){
-			this.toggleControlBar();
+			this.toggleControlBar();		
+			ag.checkAboutTabState();
 		}
 	}
 	disableControlBar(){
 		if (this.#about_tab==true){
 			this.toggleControlBar();
+			ControlBarClass.RestoreControlBar("#global-nav-bar");
 		}
 	}
 	// Toggle Main View
@@ -100,13 +102,18 @@ class System {
 		DomModifier.createCssVariable('--global-side-color',global_side_color);
 	}
 
-	
+	set_about_tab_state(val){
+		this.#about_tab_state=val;
+	}
+	get_about_tab_state(){
+		return this.#about_tab_state;
+	}
 	get_VisualiserEnabled(){
 		return this.#VisualiserEnabled;
 	}
 	get_global_colors(){
 		return [this.#global_color,this.#global_side_color];
 	}
-
+	
 }
  
