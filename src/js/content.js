@@ -330,23 +330,37 @@ async function addLibraryButton(){
 
 }
 
-function addExtraFunctionToHomeButton(){
+function addExtraFunctionToHomeButtonAndNotifButton(){
 	let HomeButton = document.getElementById('HomeButton');
 	if (!HomeButton){
 		return;
 	}
-	document.getElementById('HomeButton').addEventListener('click', (e) => {
-		//console.log('Before default HomeButton behavior');
-		//
-		if (sys.get_currentStateOfMainView() ==false){//If library is enabled override the original home button behavior and just change to main view
-				sys.enableMainView();
-				e.stopImmediatePropagation();
-				e.preventDefault();
-			}
-	}, true); // true enables capture phase
+	let notifButton = document.getElementById('notifButton');
+	if (!notifButton){
+		return;
+	}
+	
+	
+	//console.log('Before default HomeButton behavior');
+	HomeButton.addEventListener('click', (e) => {
+		if (sys.get_currentStateOfMainView() == false) { //If library is enabled override the original home button behavior and just change to main view
+			sys.enableMainView(); 
+			e.stopImmediatePropagation();
+			e.preventDefault(); 
+		  
+		}
+	}, true);// true enables capture phase
+	
+	notifButton.addEventListener('click', (e) => {
+		if (sys.get_currentStateOfMainView() == false) { //If library is enabled override the original home button behavior and just change to main view
+			sys.enableMainView(); 
+		  
+		}
+	}, true);// true enables capture phase
 
 	return true;
 }
+
 function doublescaleandupdateheight(div,transformOrigin,adjustheight) {
 	if (div) {
 		// Reset any previous transformations and height
@@ -405,7 +419,7 @@ window.onload = () => {
 		repeatUntilTrue(addLibraryButton);
 		repeatUntilTrue(addControlBarBehavior);
 		repeatUntilTrue(divideSearchBar);
-		repeatUntilTrue(addExtraFunctionToHomeButton);
+		repeatUntilTrue(addExtraFunctionToHomeButtonAndNotifButton);
 		if (repeatUntilTrue(TrackColor)){ 
 		}
 	}
