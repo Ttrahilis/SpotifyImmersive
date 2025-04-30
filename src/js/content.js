@@ -330,6 +330,23 @@ async function addLibraryButton(){
 
 }
 
+function addExtraFunctionToHomeButton(){
+	let HomeButton = document.getElementById('HomeButton');
+	if (!HomeButton){
+		return;
+	}
+	document.getElementById('HomeButton').addEventListener('click', (e) => {
+		//console.log('Before default HomeButton behavior');
+		//
+		if (sys.get_currentStateOfMainView() ==false){//If library is enabled override the original home button behavior and just change to main view
+				sys.enableMainView();
+				e.stopImmediatePropagation();
+				e.preventDefault();
+			}
+	}, true); // true enables capture phase
+
+	return true;
+}
 function doublescaleandupdateheight(div,transformOrigin,adjustheight) {
 	if (div) {
 		// Reset any previous transformations and height
@@ -387,7 +404,8 @@ window.onload = () => {
 		repeatUntilTrue(defineLogic);
 		repeatUntilTrue(addLibraryButton);
 		repeatUntilTrue(addControlBarBehavior);
-		repeatUntilTrue(divideSearchBar); 
+		repeatUntilTrue(divideSearchBar);
+		repeatUntilTrue(addExtraFunctionToHomeButton);
 		if (repeatUntilTrue(TrackColor)){ 
 		}
 	}
