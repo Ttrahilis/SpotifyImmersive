@@ -5,7 +5,7 @@ let ag;
 const originalLog = console.log;
 console.log = function(...args) {
 	//set to true for debugging
-	if (true){
+	if (false){
 		originalLog(...args);
 	}
 };
