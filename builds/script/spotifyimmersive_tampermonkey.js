@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SpotifyImmersiveScript
 // @namespace    https://github.com/ttrahilis/SpotifyImmersive
-// @version      2025.04.19.10
+// @version      2025.04.20.0
 // @description  Mobile Interface injection for Spotify Desktop Site
 // @author       ttrahilis
 // @match        https://open.spotify.com/*
@@ -55,7 +55,9 @@ class DomModifierClass {
 	createButton(button_id,parent,svg_path){ //Creates a button inside a parent container with an icon based on svg data
 		
 		let new_button = document.createElement('button');
-                
+        if (!new_button){
+			return 0;
+		}        
 		new_button.id=button_id;new_button.style.cursor = 'pointer'; new_button.style.outline = 'none'; new_button.style.border = 'none';
 		parent.appendChild(new_button);
 		new_button.appendChild(this.createSVGWithPath(svg_path));
@@ -118,12 +120,14 @@ class System {
 	
 	enableControlBar(){
 		if (this.#about_tab==false){
-			this.toggleControlBar();
+			this.toggleControlBar();		
+			ag.checkAboutTabState();
 		}
 	}
 	disableControlBar(){
 		if (this.#about_tab==true){
 			this.toggleControlBar();
+			ControlBarClass.RestoreControlBar("#global-nav-bar");
 		}
 	}
 	// Toggle Main View
@@ -165,23 +169,75 @@ class System {
 		DomModifier.createCssVariable('--global-side-color',global_side_color);
 	}
 
-	
+	set_about_tab_state(val){
+		this.#about_tab_state=val;
+	}
+	get_about_tab_state(){
+		return this.#about_tab_state;
+	}
 	get_VisualiserEnabled(){
 		return this.#VisualiserEnabled;
 	}
 	get_global_colors(){
 		return [this.#global_color,this.#global_side_color];
 	}
-
+	
 }
  //Reads/Discovers all the states of the DOM based on complex relationships identified by the programmer
+class ControlBarClass{
+	static controlbarid="globalControlBar"
+	static #controlbar;
+	
+	static MoveControlBar(parent_path){
+		this.getControlBar(); //protect in case controlbar isnt defined
+		let parentnode = document.querySelector('div[data-testid="NPV_Panel_OpenDiv"]'); 
+		if (!parentnode){
+			console.error('parent node not found:' + parentnode);
+			return;
+		}
+		this.#controlbar= parentnode.insertBefore(this.#controlbar,parentnode.children[1]);
+		this.#controlbar.id=this.controlbarid; //set id again.
+		return this.#controlbar;
+	}
+	
+	static RestoreControlBar(parent_path){
+		this.getControlBar();
+		let navbar=document.querySelector(parent_path);
+		if (!navbar){
+			console.log('parent path not found:' + parent_path );
+		}
+		navbar.parentElement.appendChild(this.#controlbar);
+	}
+	
+	static getControlBar(){
+		if (!this.#controlbar){ //for the first time loading controlbar
+			this.#controlbar = document.getElementById(this.controlbarid);
+		}
+		return this.#controlbar;
+	}
+	
+}
+//
+function removeElementsWithAncestor(selector, ancestorDiv) {
+  const elements = document.querySelectorAll(selector); // Select all matching elements
+  
+  elements.forEach((element) => {
+    // Check if ancestorDiv is an ancestor of the current element
+    if (element.closest(ancestorDiv)) {
+      element.remove(); // Remove the element if it has ancestorDiv as an ancestor
+    }
+  });
+  return elements.length;
+}
+
 class Agent{ 
 	globalBody;
 	ShowAboutTab;
 	globalAboutTab;
 	ShowFullLibrary;
 	SearchForm;
-
+	
+	
 	currentUrl="";
 	oldUrl="";
 
@@ -242,7 +298,7 @@ class Agent{
 
 	}
 
-	addScrollBarBehavior(){
+	async addScrollBarBehavior(){
 		const scrollableDiv = document.querySelector('#globalAboutTab div[data-testid="NPV_Panel_OpenDiv"]');
 		if (!scrollableDiv){
 			console.error('addScrollBarBehavior: '+'ScrollableDivNotFound');
@@ -303,8 +359,41 @@ class Agent{
 		document.addEventListener('touchend', () => {
 			isTouching = false; // Reset the state when touch is released
 		});
-
+		
+		return true; //async function
 	}
+	
+	checkAboutTabState(){
+		
+		if (sys.get_currentStateOfControlBar()==true){ //So we dont waste computational power
+			//First check about tab state through control bar's buttons
+			//Old method was to detect html content through about tab, but now control bar is included and will ruin the results unless we exclude it
+			if (document.querySelector('button[data-active="true"][aria-pressed="true"][data-restore-focus-key="device_picker"]')) {
+				sys.set_about_tab_state("device_picker"); 
+			} else if (document.querySelector('button[data-testid="control-button-queue"][data-active="true"]')){
+				sys.set_about_tab_state("queue"); 
+			} else if (document.querySelector('button[data-testid="control-button-npv"][data-active="true"][aria-pressed="true"]')){
+				sys.set_about_tab_state("now_playing");
+			} else{ //When we change about tab state control bar may get wiped, so we fall back to old 'about tab' detection
+				if (document.querySelector('#globalAboutTab div[data-testid="device-picker-row-sidepanel"]')) {
+					sys.set_about_tab_state("device_picker");
+				} else if (document.querySelector('#globalAboutTab [aria-label="Queue"]')){
+					sys.set_about_tab_state("queue");
+				} else if (document.querySelector('#globalAboutTab [aria-label="Now playing view"]')){
+					sys.set_about_tab_state("now_playing");
+				} 
+			}
+			DomModifier.writeToBody('AboutTabState',sys.get_about_tab_state());
+			if (sys.get_about_tab_state()=="queue" || sys.get_about_tab_state()=="device_picker" ){
+				ControlBarClass.RestoreControlBar('#globalAboutTab');
+			} else if (sys.get_about_tab_state()=="now_playing") {
+				ControlBarClass.MoveControlBar('div[data-testid="NPV_Panel_OpenDiv"]');
+			}
+			ag.addScrollBarBehavior();//scroll down to return	
+		}
+		
+	}
+	
 }
 let DomModifier;
 let sys;
@@ -322,8 +411,7 @@ class BasicInfo{
 	static divsToModify;
 	static unNecessaryCount=0;
 }
-const buttondelay=200; 
-let AboutTabState; //State of about tab
+const buttondelay=200;  
 
 function debounce(func, delay) {
   let timeout;
@@ -337,13 +425,16 @@ function debounce(func, delay) {
 //until 'foo' returns the boolean value true;
 //while letting the background processes continue
 //function 'foo' should return true when it accomplishes its goals
-async function repeatUntilTrue(fn) {
+async function repeatUntilTrue(fn) { 
   while (!(await fn())) {
-	  //Resume app activity for 1000 seconds
-	  await new Promise(res => setTimeout(res, 1000));
+	  //Resume app activity for some seconds
+	  await new Promise(res => setTimeout(res, 1000)); 
   }
   return true;
 }
+
+
+
 
 // Define an array of objects with your desired selectors and corresponding new IDs
 BasicInfo.divsToModify = [
@@ -442,7 +533,13 @@ async function divideSearchBar () {
 			if (!document.querySelector(`#globalBody form[data-encore-id="formInputIcon"]`)){
 				return;
 			}
+			if (document.querySelector(`#browseButtonNew`)){ //If it already exists dont add it again
+				return true;
+			}
 			let browseButtonNew = DomModifier.createButton("browseButtonNew",globalNavBar,'M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.42768 3.27893 10.533 3.27893C14.6383 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6383 17.8369 10.533 17.8369C6.42768 17.8369 3.12598 14.5636 3.12598 10.5579Z');
+			if (!browseButtonNew){
+				return;
+			}
 			
 			browseButtonNew.addEventListener('click', debounce(function() {
 				sys.toggleSearchBar();
@@ -557,7 +654,7 @@ async function defineLogic (){
 	let globalAboutTab = document.getElementById('globalAboutTab');
 	let ShowFullLibrary = document.getElementById('ShowFullLibrary');
 	let SearchForm = document.querySelector("#SearchForm");
-	let globalControlBar = document.querySelector("#globalControlBar");
+	let globalControlBar = ControlBarClass.getControlBar();
 	if (globalBody && ShowFullLibrary && globalAboutTab && ShowAboutTab && SearchForm && globalControlBar){
 	}else {
 		return;
@@ -568,66 +665,14 @@ async function defineLogic (){
 	// Call the function to get the primary color
 
 
-	function checkAboutTabState(){
-		
-		if (sys.get_currentStateOfControlBar()==true){ //So we dont waste computational power
-			if (document.querySelector('#globalAboutTab div[data-testid="device-picker-row-sidepanel"]')) {
-				AboutTabState="device_picker";
-			} else if (document.querySelector('#globalAboutTab [aria-label="Queue"]')){
-				AboutTabState="queue";
-			} else if (document.querySelector('#globalAboutTab [aria-label="Now playing view"]')){
-				AboutTabState="now_playing";
-			} 
-			DomModifier.writeToBody('AboutTabState',AboutTabState);
-			if (AboutTabState=="queue" || AboutTabState=="device_picker" ){
-				let stickyDiv = document.getElementById('globalControlBar');
-				if (stickyDiv) {
-					stickyDiv.style.marginBottom = '0';
-				} else {
-					console.error('Sticky Div Not Found');
-				}
-
-
-			} else if (AboutTabState=="now_playing") {
-				ag.addScrollBarBehavior();
-				
-				//FUNCTION TO ADJUST CONTROLBAR---------------------------
-				let scrollableContainer = document.querySelector('#globalAboutTab div[data-testid="NPV_Panel_OpenDiv"]');//div[data-testid="NPV_Panel_OpenDiv"]
-				let stickyDiv = document.getElementById('globalControlBar');
-				if (!stickyDiv){
-					console.error('Sticky Div Not Found2');
-				}
-				if (!scrollableContainer){
-					console.error('scrollableContainer Div Not Found');
-				} 
-				if (scrollableContainer && stickyDiv) {
-					
-					scrollableContainer.id="scrollableContainerAboutTab";
-					scrollableContainer.addEventListener('scroll', function(e) {//scrolltop 100
-						console.log("hello from the other side");
-						let scrollPercentage = ((scrollableContainer.scrollTop*100) / scrollableContainer.clientHeight);
-						console.log('scrollPercentage ' + scrollPercentage);
-						if (AboutTabState=="now_playing" ){
-							// Adjust margin-bottom based on scroll percentage
-							stickyDiv.style.marginBottom = `${scrollPercentage }vh`;
-						} else{
-							stickyDiv.style.marginBottom = '0';
-						}
-					});
-			}
-			//---------------------------------------------------------
-			}
-		}
-		
-	}
+	
 
 	//checkAboutTabState only triggered when we click
 	globalBody.addEventListener("click", function(event) {
 		
 		setTimeout(function() {
-			if (sys.get_currentStateOfControlBar()==true){
-				console.log("should check about tab state");
-				checkAboutTabState();
+			if (sys.get_currentStateOfControlBar()==true){ 
+				ag.checkAboutTabState();
 			}
 			
 		}, 500); // 500ms delay
@@ -657,8 +702,13 @@ async function defineLogic (){
 async function addLibraryButton(){ 
 	let globalNavBar = document.querySelector('#global-nav-bar');
 	if (globalNavBar) {
+		if (document.querySelector(`#library-toggle-button`)){ //If it already exists dont add it again
+			return true;
+		} 
 		let library_button = DomModifier.createButton("library-toggle-button",globalNavBar,'M14.5 2.134a1 1 0 0 1 1 0l6 3.464a1 1 0 0 1 .5.866V21a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1V3a1 1 0 0 1 .5-.866zM16 4.732V20h4V7.041l-4-2.309zM3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zm6 0a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1z');
-		
+		if (!library_button){
+			return;
+		}
 		console.log('Button added to #global-nav-bar successfully.');
 		
 		library_button.addEventListener('click', debounce(function() {
@@ -697,9 +747,9 @@ function doublescaleandupdateheight(div,transformOrigin,adjustheight) {
 	}
 }
 
-async function addControlBarBehavior() {
+async function addControlBarBehavior() { //Sets trigger that lets user enter about tab
 	
-	let globalControlBar = document.querySelector('#globalControlBar');
+	let globalControlBar = ControlBarClass.getControlBar();
 	let navbar = document.querySelector('#global-nav-bar');
 
 	if (globalControlBar && navbar) {
@@ -722,18 +772,22 @@ async function addControlBarBehavior() {
 }
 
 
+
 window.onload = () => {
 	
 	DomModifier = new DomModifierClass();
 	sys = new System();
 	ag = new Agent(); 
 	
-	repeatUntilTrue(assignIDs);
-	repeatUntilTrue(defineLogic);
-	repeatUntilTrue(addLibraryButton);
-	repeatUntilTrue(addControlBarBehavior);
-	repeatUntilTrue(divideSearchBar);
-	repeatUntilTrue(TrackColor);
+	if (repeatUntilTrue(assignIDs)){
+		repeatUntilTrue(defineLogic);
+		repeatUntilTrue(addLibraryButton);
+		repeatUntilTrue(addControlBarBehavior);
+		repeatUntilTrue(divideSearchBar); 
+		if (repeatUntilTrue(TrackColor)){ 
+		}
+	}
+	
 	//execution continues normally, as if we launched async threads.
 	//DO NOT DELETE THIS COMMENT
 GM_addStyle(`
@@ -1050,7 +1104,13 @@ div#main>div {
     .under-main-view+div{ /*Add bottom padding*/
         margin-bottom:0vh;
     }
-
+    .main-view-container__scroll-node{
+        overflow-x:hidden !important;
+    }
+    .main-view-container__scroll-node-child{
+        overflow-x:hidden !important;
+    }
+    
     .main-view-container__mh-footer-container >nav>div{  /*Hide footer info download spotify free credits insta etc*/
         all:unset;
         display:block;
@@ -1083,15 +1143,14 @@ div#main>div {
     #Desktop_PanelContainer_Id>div>div{
          >:nth-child(1){
             background: var(--global-color);
+            background: linear-gradient(to bottom, var(--global-color), black 50vh);
         }
+        
     }
 
-    #scrollableContainerAboutTab {
-        background: linear-gradient(to bottom, var(--global-color), black 50vh);
-    }
 }
 
-#globalBody[controlbarexpanded="open"][AboutTabState="now_playing"][visualiser="enabled"] #globalAboutTab {
+#globalBody[controlbarexpanded="open"][AboutTabState="now_playing"][visualiser="enabled"] #globalAboutTab { /*now playing view with visualiser enabled*/
     #Desktop_PanelContainer_Id>div>div{
          >:nth-child(1){
             background:transparent !important;
@@ -1125,15 +1184,19 @@ div#main>div {
             }
             
         }
+        >:nth-child(1)>:nth-child(1)>:nth-child(1){
+            >button,>span>:nth-child(1)>:nth-child(2){ /*remove buttons of fullscreen and abouttabclose*/
+                visibility: hidden;
+                display:none;
+            }
+        }
+        
         .cIUedsmg_cTnTxvOYTKR{
             min-width:100% !important;
         }
         >div>div{
-            display:contents;
-            button{
-                visibility: hidden;
-                display:none;
-            }
+            display:contents;  
+            
             button[data-testid="more-button"]{
                 visibility: visible;
                 display:flex; 
@@ -1151,6 +1214,7 @@ div#main>div {
     div[data-testid="NPV_Panel_OpenDiv"]{
         >:nth-child(1)>:nth-child(1){
             height:50vh;padding-top:20%;
+            height:33vh;
             >:nth-child(2){ /*Hide artist title and gradient*/
                 visibility:hidden;
             }
@@ -1328,10 +1392,14 @@ div#main>div {
 
 }
 
-
+#globalBody[controlBarExpanded="open"][AboutTabState="now_playing"] #globalControlBar{
+	transform: scale(1) !important;
+	min-width:100%;
+}
 #globalBody[controlBarExpanded="open"] #globalControlBar{
-
+	order:unset;
     background-color:transparent !important;
+	
 /*     background: linear-gradient(to top, rgba(0, 0, 0, .94) 10%, rgba(0, 0, 0, 0.7)  );
     backdrop-filter: blur(2px); */
     > footer{
@@ -1471,7 +1539,7 @@ div#main>div {
 
 	console.log("AAAAAAAAAAAAAAPage fully loaded. Executing script...");
 	
-
+	
 	 
 };
 

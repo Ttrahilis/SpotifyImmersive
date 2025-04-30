@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SpotifyImmersive",
-  "version": "2025.04.19.10",
+  "version": "2025.04.20.0",
   "permissions": [
     "tabs",
     "activeTab"

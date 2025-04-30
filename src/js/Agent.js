@@ -114,7 +114,8 @@ class Agent{
 	}
 
 	async addScrollBarBehavior(){
-		const scrollableDiv = document.querySelector('#globalAboutTab div[data-testid="NPV_Panel_OpenDiv"]');
+		const scrollableDiv = document.querySelector('div[data-testid="NPV_Panel_OpenDiv"]')?.parentElement?.parentElement;
+		
 		if (!scrollableDiv){
 			console.error('addScrollBarBehavior: '+'ScrollableDivNotFound');
 			return;
