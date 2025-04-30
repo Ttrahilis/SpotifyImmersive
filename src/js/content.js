@@ -5,7 +5,7 @@ let ag;
 const originalLog = console.log;
 console.log = function(...args) {
 	//set to true for debugging
-	if (false){
+	if (true){
 		originalLog(...args);
 	}
 };
@@ -363,8 +363,9 @@ async function addControlBarBehavior() { //Sets trigger that lets user enter abo
 		globalControlBar.addEventListener('click', debounce(function(e) {
 			const current = sys.get_currentStateOfControlBar(); 
 			if (
-				(current==false && (!e.target.closest('#playerControls')) )
+				(current==false && e.target.id === 'globalControlBar' )
 			) {
+				console.log('User wants to open control bar');
 				sys.enableControlBar();
 			}
 		}, buttondelay)); // Adjust delay as needed
