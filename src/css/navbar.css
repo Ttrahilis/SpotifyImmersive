@@ -62,7 +62,10 @@
          background-color:transparent !important;
 
     }
-
+    button[data-testid="friend-activity-button"]{
+        visibility: hidden;
+        position:absolute;
+    }
 }
 
 /*------------------------------------------------------------------------------------------------------*/
