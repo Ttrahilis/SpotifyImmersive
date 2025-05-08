@@ -51,7 +51,7 @@ BasicInfo.divsToModify = [
 	//I will
 	{selector: '#global-nav-bar > :nth-child(2) > :nth-child(1) > :nth-child(2)', newId: "SearchForm", selfDestruct:1},
 
-	{ selector: '#global-nav-bar div:has(+ #profileButton)', newId: "notifButton", selfDestruct:1 },
+	{ selector: '#global-nav-bar button[data-testid="whats-new-feed-button"]', newId: "notifButton", selfDestruct:1 },
 	{ selector: '#global-nav-bar button[data-testid="user-widget-link"]', newId: "profileButton", selfDestruct:1 },
 	{ selector: '#global-nav-bar > div button[data-testid="home-button"]', newId: "HomeButton", selfDestruct:1 },
 	{ selector: '#global-nav-bar > div a[href="/download"]', newId: "SPdownloadButton", selfDestruct:1 , necessary:0},
@@ -121,36 +121,39 @@ async function assignIDs(){
 
 async function divideSearchBar () { 
 	let SearchForm = document.querySelector("#SearchForm");
-
-	let globalNavBar = document.querySelector('#global-nav-bar');
-	let browseButtonOld = document.querySelector('#browseButtonOld');
-
-
-	if (browseButtonOld && globalNavBar){ 
-		
-		let mainViewContainer = document.querySelector(".main-view-container");
-
-		if (mainViewContainer && SearchForm){
-			mainViewContainer.insertBefore(SearchForm, mainViewContainer.firstChild);
-			
-			if (!document.querySelector(`#globalBody form[data-encore-id="formInputIcon"]`)){
-				return;
-			}
-			if (document.querySelector(`#browseButtonNew`)){ //If it already exists dont add it again
-				return true;
-			}
-			let browseButtonNew = DomModifier.createButton("browseButtonNew",globalNavBar,'M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.42768 3.27893 10.533 3.27893C14.6383 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6383 17.8369 10.533 17.8369C6.42768 17.8369 3.12598 14.5636 3.12598 10.5579Z');
-			if (!browseButtonNew){
-				return;
-			}
-			
-			browseButtonNew.addEventListener('click', debounce(function() {
-				sys.toggleSearchBar();
-			}, buttondelay)); // Adjust delay as needed
-			
-			return true;
-		}
+	if (!SearchForm){
+		console.log('divideSearchBar: SearchForm not found');
+		return;
 	}
+	let globalNavBar = document.querySelector('#global-nav-bar');
+	if (!globalNavBar){
+		console.log('globalNavBar: SearchForm not found');
+		return;
+	}
+	let mainViewContainer = document.querySelector(".main-view-container");
+	if (!mainViewContainer){
+		console.log('divideSearchBar: mainViewContainer not found');
+		return;
+	}
+	mainViewContainer.insertBefore(SearchForm, mainViewContainer.firstChild);
+	if (!document.querySelector(`#globalBody form[data-encore-id="formInputIcon"]`)){
+		return;
+	}
+	if (document.querySelector(`#browseButtonNew`)){ //If it already exists dont add it again
+		return true;
+	}
+	let browseButtonNew = DomModifier.createButton("browseButtonNew",globalNavBar,'M10.533 1.27893C5.35215 1.27893 1.12598 5.41887 1.12598 10.5579C1.12598 15.697 5.35215 19.8369 10.533 19.8369C12.767 19.8369 14.8235 19.0671 16.4402 17.7794L20.7929 22.132C21.1834 22.5226 21.8166 22.5226 22.2071 22.132C22.5976 21.7415 22.5976 21.1083 22.2071 20.7178L17.8634 16.3741C19.1616 14.7849 19.94 12.7634 19.94 10.5579C19.94 5.41887 15.7138 1.27893 10.533 1.27893ZM3.12598 10.5579C3.12598 6.55226 6.42768 3.27893 10.533 3.27893C14.6383 3.27893 17.94 6.55226 17.94 10.5579C17.94 14.5636 14.6383 17.8369 10.533 17.8369C6.42768 17.8369 3.12598 14.5636 3.12598 10.5579Z');
+	if (!browseButtonNew){
+		return;
+	}
+	
+	browseButtonNew.addEventListener('click', debounce(function() {
+		sys.toggleSearchBar();
+	}, buttondelay)); // Adjust delay as needed
+	
+	return true;
+	
+	
 	
 }
 
